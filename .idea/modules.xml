@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/AlloSliderButton.iml" filepath="$PROJECT_DIR$/AlloSliderButton.iml" />
+      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/com.tieorange.allosliderbutton/com.tieorange.allosliderbutton.iml" filepath="$PROJECT_DIR$/com.tieorange.allosliderbutton/com.tieorange.allosliderbutton.iml" />
+    </modules>
+  </component>
+</project>

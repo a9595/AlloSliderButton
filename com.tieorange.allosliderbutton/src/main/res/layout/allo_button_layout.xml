@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    >
+
+
+  <com.tieorange.allosliderbutton.VerticalSeekBar
+      android:id="@+id/vertical_Seekbar"
+      android:layout_width="50dp"
+      android:layout_height="350dp"
+      android:layout_alignParentRight="true"
+      android:layout_centerVertical="true"
+      android:progressDrawable="@drawable/red_scrubber_progress"
+      android:thumb="@drawable/red_scrubber_control"
+      />
+
+  <TextView
+      android:id="@+id/publicYawn"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_alignParentTop="true"
+      android:layout_below="@+id/vertical_Seekbar"
+      android:layout_marginRight="16dp"
+      android:layout_toLeftOf="@id/vertical_Seekbar"
+      android:gravity="center"
+      android:visibility="gone"
+      android:text="Public Yawn"
+      tools:visibility="visible"
+      />
+  <TextView
+      android:id="@+id/privateYawn"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_below="@+id/vertical_Seekbar"
+      android:layout_centerVertical="true"
+      android:layout_marginRight="16dp"
+      android:layout_toLeftOf="@id/vertical_Seekbar"
+      android:gravity="center"
+      android:visibility="gone"
+      android:text="Private Yawn"
+      tools:visibility="visible"
+      />
+</RelativeLayout>
