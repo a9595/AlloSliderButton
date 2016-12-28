@@ -1,18 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
-<selector xmlns:android="http://schemas.android.com/apk/res/android">
-    <!-- <item android:state_pressed="true">
-       <shape
-           android:shape="oval">
+<!--
+<ripple xmlns:android="http://schemas.android.com/apk/res/android"
+        android:color="@color/colorAccent">
 
-         <solid
-             android:color="@color/lime_A200"/>
+    <item>
+        <selector>
 
-         <size
-             android:height="@dimen/seekbar_fab_size"
-             android:width="@dimen/seekbar_fab_size"/>
-       </shape>
-     </item>-->
+            <item android:state_pressed="true">
+                <shape
+                    android:shape="oval">
 
+                    <solid
+                        android:color="@color/fab_color_1"/>
+
+                    <size
+                        android:width="@dimen/seekbar_fab_size"
+                        android:height="@dimen/seekbar_fab_size"/>
+                </shape>
+            </item>
+            <layer-list>
+                <item android:drawable="@mipmap/ic_launcher"/>
+                <item>
+                    <shape
+                        android:shape="oval">
+
+                        <solid
+                            android:color="@color/deep_orange_500"/>
+
+                        <size
+                            android:width="@dimen/seekbar_fab_size"
+                            android:height="@dimen/seekbar_fab_size"/>
+                    </shape>
+                </item>
+            </layer-list>
+
+        </selector>
+
+    </item>
+</ripple>
+
+-->
+
+
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
     <item>
         <shape
             android:shape="oval">
@@ -24,19 +54,11 @@
                 android:width="@dimen/seekbar_fab_size"
                 android:height="@dimen/seekbar_fab_size"/>
         </shape>
-        <ripple android:color="@color/fab_color_1"/>
     </item>
-
-    <item android:state_pressed="true">
-        <shape
-            android:shape="oval">
-
-            <solid
-                android:color="@color/fab_color_1"/>
-
-            <size
-                android:width="@dimen/seekbar_fab_size"
-                android:height="@dimen/seekbar_fab_size"/>
-        </shape>
-    </item>
-</selector>
+    <item
+        android:bottom="20dp"
+        android:drawable="@mipmap/ic_launcher"
+        android:left="20dp"
+        android:right="20dp"
+        android:top="20dp"/>
+</layer-list>
