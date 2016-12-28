@@ -7,8 +7,8 @@
     <item android:drawable="@drawable/red_scrubber_control_normal_holo"/>-->
 
 
-  <item android:drawable="@drawable/fab_layerlist" android:state_enabled="false"/>
-  <item android:drawable="@drawable/fab_layerlist" android:state_pressed="true"/>
-  <item android:drawable="@drawable/fab_layerlist" android:state_selected="true"/>
-  <item android:drawable="@drawable/fab_layerlist"/>
+  <item android:drawable="@drawable/thumb_layers_list" android:state_enabled="false"/>
+  <item android:drawable="@drawable/thumb_layers_list" android:state_pressed="true"/>
+  <item android:drawable="@drawable/thumb_layers_list" android:state_selected="true"/>
+  <item android:drawable="@drawable/thumb_layers_list"/>
 </selector>

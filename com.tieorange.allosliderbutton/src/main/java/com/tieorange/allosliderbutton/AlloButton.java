@@ -71,7 +71,7 @@ public class AlloButton extends RelativeLayout {
 
 //        final Drawable drawableTransparent = ContextCompat.getDrawable(getContext(), android.R.drawable.screen_background_light_transparent);
         final Drawable drawableTransparent = null;
-        final Drawable drawableNormal = ContextCompat.getDrawable(getContext(), R.drawable.red_scrubber_progress);
+        final Drawable drawableNormal = ContextCompat.getDrawable(getContext(), R.drawable.progress);
         mVerticalSeekBar.setProgressDrawable(drawableTransparent);
 
         mVerticalSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
