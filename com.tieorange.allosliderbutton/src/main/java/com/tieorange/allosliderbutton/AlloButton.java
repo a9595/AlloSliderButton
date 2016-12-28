@@ -28,6 +28,8 @@ public class AlloButton extends RelativeLayout {
   private VerticalSeekBar mVerticalSeekBar;
   private TextView mPrivateYawn;
   private TextView mPublicYawn;
+  public static final int SEEK_BAR_MAX = 100;
+  public static final int FIRST_STEP_SNAPPER = 20;
 
   public AlloButton(Context context, AttributeSet attrs) {
     super(context, attrs);
@@ -56,18 +58,16 @@ public class AlloButton extends RelativeLayout {
     mVerticalSeekBar.setProgress(0);
     //final int progressStep = 90;
     //mVerticalSeekBar.incrementProgressBy(progressStep);
-    final int seekBarMax = 100;
-    final int firstStepSnapper = 10;
-    final int[] stepSize = { firstStepSnapper };
-    final int privateYawnProgress = seekBarMax / 2;
-    final int publicYawnProgress = seekBarMax;
+    final int[] stepSize = {FIRST_STEP_SNAPPER};
+    final int privateYawnProgress = SEEK_BAR_MAX / 2;
+    final int publicYawnProgress = SEEK_BAR_MAX;
     final int rangeStepYawn = 20;
     final int privateYawnStartRange = privateYawnProgress - rangeStepYawn;
     final int privateYawnEndRange = privateYawnProgress + rangeStepYawn;
     final int publicYawnStartRange = publicYawnProgress - rangeStepYawn;
     final int publicYawnEndRange = publicYawnProgress + rangeStepYawn;
 
-    mVerticalSeekBar.setMax(seekBarMax);
+    mVerticalSeekBar.setMax(SEEK_BAR_MAX);
 
     final Drawable drawableTransparent = ContextCompat.getDrawable(getContext(), android.R.drawable.screen_background_light_transparent);
     final Drawable drawableNormal = ContextCompat.getDrawable(getContext(), R.drawable.red_scrubber_progress);
@@ -109,17 +109,17 @@ public class AlloButton extends RelativeLayout {
         if (progress >= step) {
           stepSize[0] = 1;
         } else if (progress < step) {
-          stepSize[0] = firstStepSnapper;
+          stepSize[0] = FIRST_STEP_SNAPPER;
         }
       }
 
       private void showHideBorder(int progress) {
         //show border background:
-        if (progress >= firstStepSnapper) {
+        if (progress >= FIRST_STEP_SNAPPER) {
           mVerticalSeekBar.setProgressDrawable(drawableNormal);
           mPrivateYawn.setVisibility(VISIBLE);
           mPublicYawn.setVisibility(VISIBLE);
-        } else if (progress < firstStepSnapper) { // hide border
+        } else if (progress < FIRST_STEP_SNAPPER) { // hide border
           mVerticalSeekBar.setProgressDrawable(drawableTransparent);
           mPrivateYawn.setVisibility(GONE);
           mPublicYawn.setVisibility(GONE);
