@@ -22,6 +22,7 @@ import static android.graphics.Typeface.BOLD;
 
 public class AlloButton extends RelativeLayout {
     private static final String TAG = AlloButton.class.getCanonicalName();
+    public static final int MINIMAL_PROGRESS = 0;
     View mRootView;
     private AlloButton mImageButton;
     private SimpleFingerGestures mSwipeListener = new SimpleFingerGestures();
@@ -30,6 +31,8 @@ public class AlloButton extends RelativeLayout {
     private TextView mPublicYawn;
     public static final int SEEK_BAR_MAX = 100;
     public static final int FIRST_STEP_SNAPPER = 20;
+    private Drawable mDrawableTransparent;
+    private Drawable mDrawableNormal;
 
     public AlloButton(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -48,17 +51,17 @@ public class AlloButton extends RelativeLayout {
 
         //initButton();
 
-        mVerticalSeekBar = (VerticalSeekBar) findViewById(R.id.vertical_Seekbar);
+        mVerticalSeekBar = (VerticalSeekBar) findViewById(R.id.verticalSeekbar);
         mPrivateYawn = (TextView) findViewById(R.id.privateYawn);
         mPublicYawn = (TextView) findViewById(R.id.publicYawn);
         initSeekBar();
     }
 
     private void initSeekBar() {
-        mVerticalSeekBar.setProgress(0);
+        mVerticalSeekBar.setProgress(MINIMAL_PROGRESS);
         //final int progressStep = 90;
         //mVerticalSeekBar.incrementProgressBy(progressStep);
-        final int[] stepSize = {FIRST_STEP_SNAPPER};
+        final int[] firstStepSnapper = {FIRST_STEP_SNAPPER};
         final int privateYawnProgress = SEEK_BAR_MAX / 2;
         final int publicYawnProgress = SEEK_BAR_MAX;
         final int rangeStepYawn = 20;
@@ -70,18 +73,23 @@ public class AlloButton extends RelativeLayout {
         mVerticalSeekBar.setMax(SEEK_BAR_MAX);
 
 //        final Drawable drawableTransparent = ContextCompat.getDrawable(getContext(), android.R.drawable.screen_background_light_transparent);
-        final Drawable drawableTransparent = null;
-        final Drawable drawableNormal = ContextCompat.getDrawable(getContext(), R.drawable.progress);
-        mVerticalSeekBar.setProgressDrawable(drawableTransparent);
+        mDrawableTransparent = null;
+        mDrawableNormal = ContextCompat.getDrawable(getContext(), R.drawable.progress);
+        mVerticalSeekBar.setProgressDrawable(mDrawableTransparent);
 
-        mVerticalSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+        mVerticalSeekBar.setOnSeekBarChangeListener(getSeekBarChangeListener(firstStepSnapper, privateYawnStartRange, privateYawnEndRange, publicYawnStartRange, publicYawnEndRange, mDrawableTransparent, mDrawableNormal));
+    }
+
+    @NonNull
+    private SeekBar.OnSeekBarChangeListener getSeekBarChangeListener(final int[] firstStepSnapper, final int privateYawnStartRange, final int privateYawnEndRange, final int publicYawnStartRange, final int publicYawnEndRange, final Drawable drawableTransparent, final Drawable drawableNormal) {
+        return new SeekBar.OnSeekBarChangeListener() {
             private int mProgressAtStartTracking;
             private final int SENSITIVITY = 10;
 
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
 
-                int step = stepSize[0];
+                int step = firstStepSnapper[0];
                 progress = initStep(seekBar, progress, step);
 
                 snapThumb(progress, step);
@@ -108,22 +116,18 @@ public class AlloButton extends RelativeLayout {
 
             private void snapThumb(int progress, int step) {
                 if (progress >= step) {
-                    stepSize[0] = 1;
+                    firstStepSnapper[0] = 1;
                 } else if (progress < step) {
-                    stepSize[0] = FIRST_STEP_SNAPPER;
+                    firstStepSnapper[0] = FIRST_STEP_SNAPPER;
                 }
             }
 
             private void showHideBorder(int progress) {
                 //show border background:
                 if (progress >= FIRST_STEP_SNAPPER) {
-                    mVerticalSeekBar.setProgressDrawable(drawableNormal);
-                    mPrivateYawn.setVisibility(VISIBLE);
-                    mPublicYawn.setVisibility(VISIBLE);
+                    changeVisibility(true);
                 } else if (progress < FIRST_STEP_SNAPPER) { // hide border
-                    mVerticalSeekBar.setProgressDrawable(drawableTransparent);
-                    mPrivateYawn.setVisibility(GONE);
-                    mPublicYawn.setVisibility(GONE);
+                    changeVisibility(false);
                 }
             }
 
@@ -136,53 +140,33 @@ public class AlloButton extends RelativeLayout {
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
                 Log.d(TAG, "onStopTrackingTouch() called with: seekBar = [" + seekBar + "]");
+
+                // TODO: 12/28/16 Remove:
+                /*if (seekBar.getProgress() < MINIMAL_PROGRESS) {
+                    seekBar.setProgress(MINIMAL_PROGRESS);
+                }*/
                 if (Math.abs(mProgressAtStartTracking - seekBar.getProgress()) <= SENSITIVITY) {
                     Log.d(TAG, "MATH onStopTrackingTouch() called with: seekBar = [" + seekBar + "]");
                 }
             }
-        });
+        };
     }
 
-    @NonNull
-    private SimpleFingerGestures.OnFingerGestureListener getSwipeListener() {
-        return new SimpleFingerGestures.OnFingerGestureListener() {
-            @Override
-            public boolean onSwipeUp(int fingers, long duration, double distance) {
-                Log.d(TAG, "onSwipeUp() called with: fingers = [" + fingers + "], duration = [" + duration + "], distance = [" + distance + "]");
-                return true;
-            }
+    private void changeVisibility(boolean isVisible) {
+        // TODO: 12/28/16 Add animation:
+        Drawable drawable;
+        int visible;
+        if (isVisible) {
+            drawable = mDrawableNormal;
+            visible = View.VISIBLE;
+        } else {
+            drawable = mDrawableTransparent;
+            visible = View.GONE;
+        }
 
-            @Override
-            public boolean onSwipeDown(int fingers, long duration, double distance) {
-                Log.d(TAG, "onSwipeUp() called with: fingers = [" + fingers + "], duration = [" + duration + "], distance = [" + distance + "]");
-                return false;
-            }
-
-            @Override
-            public boolean onSwipeLeft(int i, long l, double v) {
-                return false;
-            }
-
-            @Override
-            public boolean onSwipeRight(int i, long l, double v) {
-                return false;
-            }
-
-            @Override
-            public boolean onPinch(int i, long l, double v) {
-                return false;
-            }
-
-            @Override
-            public boolean onUnpinch(int i, long l, double v) {
-                return false;
-            }
-
-            @Override
-            public boolean onDoubleTap(int i) {
-                return false;
-            }
-        };
+        mVerticalSeekBar.setProgressDrawable(drawable);
+        mPrivateYawn.setVisibility(visible);
+        mPublicYawn.setVisibility(visible);
     }
 
     private void initButton() {
