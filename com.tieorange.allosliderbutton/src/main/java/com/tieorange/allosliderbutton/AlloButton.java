@@ -24,14 +24,12 @@ public class AlloButton extends RelativeLayout {
     private static final String TAG = AlloButton.class.getCanonicalName();
     public static final int MINIMAL_PROGRESS = 0;
     View mRootView;
-    private AlloButton mImageButton;
-    private SimpleFingerGestures mSwipeListener = new SimpleFingerGestures();
     private VerticalSeekBar mVerticalSeekBar;
     private TextView mPrivateYawn;
     private TextView mPublicYawn;
     public static final int SEEK_BAR_MAX = 100;
     public static final int FIRST_STEP_SNAPPER = 10;
-    private final int SENSITIVITY = 20;
+    private final int SENSITIVITY = 10;
 
     private Drawable mDrawableTransparent;
     private Drawable mDrawableNormal;
@@ -48,10 +46,6 @@ public class AlloButton extends RelativeLayout {
 
     private void init(Context context) {
         mRootView = inflate(context, R.layout.allo_button_layout, this);
-        //mImageButton = (AlloButton) findViewById(R.id.imageButton);
-        //mSwipeListener.setOnFingerGestureListener(getSwipeListener());
-
-        //initButton();
 
         mVerticalSeekBar = (VerticalSeekBar) findViewById(R.id.verticalSeekbar);
         mPrivateYawn = (TextView) findViewById(R.id.privateYawn);
@@ -61,8 +55,6 @@ public class AlloButton extends RelativeLayout {
 
     private void initSeekBar() {
         mVerticalSeekBar.setProgress(MINIMAL_PROGRESS);
-        //final int progressStep = 90;
-        //mVerticalSeekBar.incrementProgressBy(progressStep);
         final int[] firstStepSnapper = {FIRST_STEP_SNAPPER};
         final int privateYawnProgress = SEEK_BAR_MAX / 2;
         final int publicYawnProgress = SEEK_BAR_MAX;
