@@ -166,7 +166,7 @@ public class AlloButton extends RelativeLayout {
         }
 
         mVerticalSeekBar.setProgressDrawable(drawable);
-        mPrivateYawn.setVisibility(visible);
+//        mPrivateYawn.setVisibility(visible);
         mPublicYawn.setVisibility(visible);
     }
 

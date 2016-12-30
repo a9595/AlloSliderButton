@@ -9,12 +9,14 @@
     <com.tieorange.allosliderbutton.VerticalSeekBar
         android:id="@+id/verticalSeekbar"
         android:layout_width="90dp"
-        android:thumbOffset="2dp"
         android:layout_height="350dp"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
+        android:elevation="6dp"
         android:progressDrawable="@drawable/progress"
+        android:splitTrack="false"
         android:thumb="@drawable/thumb"
+        android:thumbOffset="2dp"
         />
 
     <TextView
@@ -24,9 +26,11 @@
         android:layout_alignParentTop="true"
         android:layout_below="@+id/verticalSeekbar"
         android:layout_marginRight="16dp"
+        android:layout_marginTop="50dp"
         android:layout_toLeftOf="@id/verticalSeekbar"
         android:gravity="center"
-        android:text="Public Yawn"
+        android:text="Random yawn"
+        android:textSize="16dp"
         android:visibility="gone"
         tools:visibility="visible"
         />

@@ -55,8 +55,10 @@
                 android:height="@dimen/seekbar_fab_size"/>
         </shape>
     </item>
+
     <item
         android:drawable="@drawable/ic_zzz"
+        >
 
-        />
+    </item>
 </layer-list>
