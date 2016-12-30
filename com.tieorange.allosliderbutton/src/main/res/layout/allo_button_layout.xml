@@ -8,8 +8,8 @@
 
     <com.tieorange.allosliderbutton.VerticalSeekBar
         android:id="@+id/verticalSeekbar"
-        android:layout_width="65dp"
-        android:thumbOffset="10dp"
+        android:layout_width="90dp"
+        android:thumbOffset="2dp"
         android:layout_height="350dp"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"

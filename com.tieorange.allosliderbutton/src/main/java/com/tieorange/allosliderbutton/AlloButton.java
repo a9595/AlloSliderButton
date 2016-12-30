@@ -30,7 +30,9 @@ public class AlloButton extends RelativeLayout {
     private TextView mPrivateYawn;
     private TextView mPublicYawn;
     public static final int SEEK_BAR_MAX = 100;
-    public static final int FIRST_STEP_SNAPPER = 20;
+    public static final int FIRST_STEP_SNAPPER = 10;
+    private final int SENSITIVITY = 20;
+
     private Drawable mDrawableTransparent;
     private Drawable mDrawableNormal;
 
@@ -84,7 +86,6 @@ public class AlloButton extends RelativeLayout {
     private SeekBar.OnSeekBarChangeListener getSeekBarChangeListener(final int[] firstStepSnapper, final int privateYawnStartRange, final int privateYawnEndRange, final int publicYawnStartRange, final int publicYawnEndRange, final Drawable drawableTransparent, final Drawable drawableNormal) {
         return new SeekBar.OnSeekBarChangeListener() {
             private int mProgressAtStartTracking;
-            private final int SENSITIVITY = 10;
 
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
@@ -169,28 +170,4 @@ public class AlloButton extends RelativeLayout {
         mPublicYawn.setVisibility(visible);
     }
 
-    private void initButton() {
-        mImageButton.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.d(TAG, "onClick() called with: v = [" + v + "]");
-            }
-        });
-        //mImageButton.setOnTouchListener(mSwipeListener);
-        mImageButton.setOnTouchListener(new OnSwipeTouchListener(getContext()) {
-            public void onSwipeTop() {
-                Log.d(TAG, "onSwipeTop() called");
-            }
-
-            public void onSwipeRight() {
-            }
-
-            public void onSwipeLeft() {
-            }
-
-            public void onSwipeBottom() {
-                Log.d(TAG, "onSwipeBottom() called");
-            }
-        });
-    }
 }
