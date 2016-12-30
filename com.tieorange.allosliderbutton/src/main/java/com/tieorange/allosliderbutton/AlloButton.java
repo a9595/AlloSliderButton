@@ -28,7 +28,7 @@ public class AlloButton extends RelativeLayout {
     private TextView mPrivateYawn;
     private TextView mPublicYawn;
     public static final int SEEK_BAR_MAX = 100;
-    public static final int FIRST_STEP_SNAPPER = 10;
+    public static final int FIRST_STEP_SNAPPER = 20;
     private final int SENSITIVITY = 10;
 
     private Drawable mDrawableTransparent;
@@ -51,6 +51,7 @@ public class AlloButton extends RelativeLayout {
         mPrivateYawn = (TextView) findViewById(R.id.privateYawn);
         mPublicYawn = (TextView) findViewById(R.id.publicYawn);
         initSeekBar();
+
     }
 
     private void initSeekBar() {
