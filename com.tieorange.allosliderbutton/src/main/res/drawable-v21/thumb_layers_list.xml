@@ -48,7 +48,7 @@
             android:shape="oval">
 
             <solid
-                android:color="@color/deep_orange_500"/>
+                android:color="@color/colorAccent"/>
 
             <size
                 android:width="@dimen/seekbar_fab_size"

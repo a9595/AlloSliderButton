@@ -2,7 +2,6 @@
 <resources>
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
-    <color name="colorAccent">#FF4081</color>
     <color name="fab_color_2_muted">@color/grey_200</color>
     <color name="grey_200">#EEEEEE</color>
     <color name="grey_300">#bfbebe</color>
@@ -12,4 +11,7 @@
     <color name="fab_color_1">@color/lime_A200</color>
     <color name="fab_color_2">@color/deep_orange_500</color>
     <color name="colorAccentYellow">#ffb300</color>
+
+    <color name="colorAccent">#00bfa5</color>
+
 </resources>

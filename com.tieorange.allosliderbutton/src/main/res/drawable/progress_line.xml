@@ -4,12 +4,11 @@
     <item android:id="@android:id/background">
         <shape android:shape="rectangle">
             <corners android:radius="20dp"/>
-            <solid android:color="@color/colorAccentYellow" />
-
+            <solid android:color="@color/colorAccentYellow"/>
         </shape>
     </item>
 
-    <item android:id="@android:id/progress">
+    <!--<item android:id="@android:id/progress">
 
         <clip>
             <shape android:shape="rectangle">
@@ -17,6 +16,6 @@
                 <solid android:color="@color/fab_color_1" />
             </shape>
         </clip>
-    </item>
+    </item>-->
 
 </layer-list>
