@@ -11,13 +11,22 @@
         android:id="@+id/verticalSeekbar"
         android:layout_width="90dp"
         android:layout_height="350dp"
-        android:layout_alignParentRight="true"
-        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
         android:progressDrawable="@drawable/progress"
         android:splitTrack="false"
         android:thumb="@drawable/thumb"
         android:thumbOffset="2dp"
         />
+
+    <View
+        android:id="@+id/fabSendYawn"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="280dp"
+        android:background="@drawable/thumb_layers_list"
+        android:clickable="true"
+        android:visibility="gone"/>
 
     <TextView
         android:id="@+id/publicYawn"
@@ -30,7 +39,7 @@
         android:layout_toLeftOf="@id/verticalSeekbar"
         android:gravity="center"
         android:text="Random"
-        android:textSize="16dp"
+        android:textSize="16sp"
         android:visibility="gone"
         tools:visibility="visible"
         />

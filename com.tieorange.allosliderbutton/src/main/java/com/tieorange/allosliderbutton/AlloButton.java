@@ -12,8 +12,6 @@ import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
-import in.championswimmer.sfg.lib.SimpleFingerGestures;
-
 import static android.graphics.Typeface.BOLD;
 
 /**
@@ -28,11 +26,14 @@ public class AlloButton extends RelativeLayout {
     private TextView mPrivateYawn;
     private TextView mPublicYawn;
     public static final int SEEK_BAR_MAX = 100;
-    public static final int FIRST_STEP_SNAPPER = 20;
-    private final int SENSITIVITY = 10;
+    public static final int FIRST_STEP_SNAPPER = 1; //was 20
+    private final int SENSITIVITY = 1; //was 10
 
     private Drawable mDrawableTransparent;
     private Drawable mDrawableNormal;
+    private View mFabSendYawn;
+    private boolean mIsSmall = true;
+    private IOnViewMeasuredListener mOnViewMeasuredListener;
 
     public AlloButton(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -48,13 +49,43 @@ public class AlloButton extends RelativeLayout {
         mRootView = inflate(context, R.layout.allo_button_layout, this);
 
         mVerticalSeekBar = (VerticalSeekBar) findViewById(R.id.verticalSeekbar);
+        // TODO: 12/31/16 Refactor:
+        mOnViewMeasuredListener = new IOnViewMeasuredListener() {
+            @Override
+            public void measured(int width, int height) {
+                Log.d(TAG, "measured() called with: width = [" + width + "], height = [" + height + "]");
+                changeSize(true);
+                mOnViewMeasuredListener = null;
+            }
+        };
+        mVerticalSeekBar.setOnViewMeasuredListener(mOnViewMeasuredListener);
+
+        mFabSendYawn = findViewById(R.id.fabSendYawn);
         mPrivateYawn = (TextView) findViewById(R.id.privateYawn);
         mPublicYawn = (TextView) findViewById(R.id.publicYawn);
         initSeekBar();
-
     }
 
+    /*private void initFAB() {
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN) {
+            Drawable thumb = mVerticalSeekBar.getThumb();
+            mFabSendYawn.setBackground(thumb);
+        }
+
+        mFabSendYawn.setOnLongClickListener(new OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                Tools.setVisibility(View.GONE, view);
+                Tools.setVisibility(View.VISIBLE, mVerticalSeekBar);
+                return true;
+            }
+        });
+    }
+*/
     private void initSeekBar() {
+//        changeSize(true);
+        Log.d(TAG, "initSeekBar: width = " + mVerticalSeekBar.getMeasuredWidth() + " height = " + mVerticalSeekBar.getMeasuredHeight());
+
         mVerticalSeekBar.setProgress(MINIMAL_PROGRESS);
         final int[] firstStepSnapper = {FIRST_STEP_SNAPPER};
         final int privateYawnProgress = SEEK_BAR_MAX / 2;
@@ -73,6 +104,23 @@ public class AlloButton extends RelativeLayout {
         mVerticalSeekBar.setProgressDrawable(mDrawableTransparent);
 
         mVerticalSeekBar.setOnSeekBarChangeListener(getSeekBarChangeListener(firstStepSnapper, privateYawnStartRange, privateYawnEndRange, publicYawnStartRange, publicYawnEndRange, mDrawableTransparent, mDrawableNormal));
+        Log.d(TAG, "initSeekBar: width = " + mVerticalSeekBar.getMeasuredWidth() + " height = " + mVerticalSeekBar.getMeasuredHeight());
+    }
+
+    private void changeSize(boolean isSmall) {
+        int small = 100;
+        int big = 350;
+        int width = mVerticalSeekBar.getWidth();
+        if (isSmall) {
+            small = Tools.convertDpToPx(small, getContext());
+            mVerticalSeekBar.setLayoutParams(new RelativeLayout.LayoutParams(width, small));
+            mIsSmall = true;
+        } else {
+            big = Tools.convertDpToPx(big, getContext());
+            mVerticalSeekBar.setLayoutParams(new LayoutParams(width, big));
+            mVerticalSeekBar.setProgress(10);
+            mIsSmall = false;
+        }
     }
 
     @NonNull
@@ -85,6 +133,8 @@ public class AlloButton extends RelativeLayout {
 
                 int step = firstStepSnapper[0];
                 progress = initStep(seekBar, progress, step);
+
+                checkHeight(progress);
 
                 snapThumb(progress, step);
                 showHideBorder(progress);
@@ -144,6 +194,19 @@ public class AlloButton extends RelativeLayout {
                 }
             }
         };
+    }
+
+    private void checkHeight(int progress) {
+        if (mIsSmall) {
+            if (progress >= SEEK_BAR_MAX) {
+                changeSize(false);
+            }
+        } else {
+            if (progress <= 5) {
+                changeSize(true);
+            }
+
+        }
     }
 
     private void changeVisibility(boolean isVisible) {

@@ -3,6 +3,8 @@ package com.tieorange.allosliderbutton;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Rect;
+import android.os.Build;
+import android.support.annotation.RequiresApi;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -18,6 +20,7 @@ public class VerticalSeekBar extends SeekBar {
     private static final String TAG = VerticalSeekBar.class.getCanonicalName();
     private float mThumbX;
     private float mThumbY;
+    private IOnViewMeasuredListener mOnViewMeasuredListener;
     //http://stackoverflow.com/questions/9787906/android-seekbar-solution -- react only on finger move. not tapping
 
     public VerticalSeekBar(Context context) {
@@ -62,11 +65,17 @@ public class VerticalSeekBar extends SeekBar {
         super.onDraw(c);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         if (!isEnabled()) {
             return false;
         }
+        /*if (!isTouchInThumbBounds(event)) {
+            return false;
+        }*/
+
+
         int i = 0;
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
@@ -98,6 +107,28 @@ public class VerticalSeekBar extends SeekBar {
         return true;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
+    private boolean isTouchInThumbBounds(MotionEvent event) {
+        Rect bounds = getThumb().getBounds();
+        int x = (int) event.getX() + getLeft();
+        int y = (int) event.getY() + getTop();
+
+        Log.d(TAG, "isTouchInThumbBounds() called with: bounds=  = [" + bounds + " ------- x = " + x + " y = " + y);
+
+        return bounds.contains(x, y);
+    }
+
+    @Override
+    protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
+        super.onLayout(changed, left, top, right, bottom);
+        int height = getHeight();
+        int width = getWidth();
+        mOnViewMeasuredListener.measured(width, height);
+    }
+
+    public void setOnViewMeasuredListener(IOnViewMeasuredListener listener) {
+        mOnViewMeasuredListener = listener;
+    }
 
     private int checkMinimalValue(int i) {
         if (i < MINIMAL_PROGRESS) {
