@@ -40,7 +40,7 @@ public class DraggableActivity extends AppCompatActivity implements View.OnTouch
         switch (event.getAction() & MotionEvent.ACTION_MASK) {
             case MotionEvent.ACTION_DOWN:
                 RelativeLayout.LayoutParams lParams = (RelativeLayout.LayoutParams) view.getLayoutParams();
-                _xDelta = X - lParams.leftMargin;
+//                _xDelta = X - lParams.leftMargin;
                 _yDelta = Y - lParams.topMargin;
                 break;
             case MotionEvent.ACTION_UP:
@@ -51,7 +51,7 @@ public class DraggableActivity extends AppCompatActivity implements View.OnTouch
                 break;
             case MotionEvent.ACTION_MOVE:
                 RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) view.getLayoutParams();
-                layoutParams.leftMargin = X - _xDelta;
+//                layoutParams.leftMargin = X - _xDelta;
                 layoutParams.topMargin = Y - _yDelta;
                 layoutParams.rightMargin = -250;
                 layoutParams.bottomMargin = -250;
