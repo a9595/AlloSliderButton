@@ -48,14 +48,14 @@
         android:id="@+id/localYawn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignLeft="@id/globalYawn"
         android:layout_below="@+id/globalYawn"
         android:layout_centerVertical="true"
         android:layout_marginRight="16dp"
-        android:layout_marginTop="50dp"
-        android:layout_toLeftOf="@id/verticalSeekbar"
+        android:layout_marginTop="80dp"
         android:gravity="center"
         android:text="@string/private_yawn"
-        android:visibility="visible"
+        android:visibility="gone"
         tools:visibility="visible"
         />
 
@@ -64,7 +64,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignBottom="@id/verticalSeekbar"
+        android:layout_alignLeft="@id/globalYawn"
         android:layout_marginBottom="50dp"
-        android:layout_toLeftOf="@id/verticalSeekbar"
-        android:text="@string/cancel"/>
+        android:text="@string/cancel"
+        android:visibility="gone"
+        tools:visibility="visible"/>
 </RelativeLayout>
