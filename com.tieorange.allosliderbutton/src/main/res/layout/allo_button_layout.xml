@@ -29,7 +29,7 @@
         android:visibility="gone"/>
 
     <TextView
-        android:id="@+id/publicYawn"
+        android:id="@+id/globalYawn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
@@ -38,23 +38,33 @@
         android:layout_marginTop="50dp"
         android:layout_toLeftOf="@id/verticalSeekbar"
         android:gravity="center"
-        android:text="Random"
+        android:text="@string/global"
         android:textSize="16sp"
         android:visibility="gone"
         tools:visibility="visible"
         />
 
     <TextView
-        android:id="@+id/privateYawn"
+        android:id="@+id/localYawn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/verticalSeekbar"
+        android:layout_below="@+id/globalYawn"
         android:layout_centerVertical="true"
         android:layout_marginRight="16dp"
+        android:layout_marginTop="50dp"
         android:layout_toLeftOf="@id/verticalSeekbar"
         android:gravity="center"
-        android:text="Private Yawn"
-        android:visibility="gone"
+        android:text="@string/private_yawn"
+        android:visibility="visible"
         tools:visibility="visible"
         />
+
+    <TextView
+        android:id="@+id/cancel_yawn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@id/verticalSeekbar"
+        android:layout_marginBottom="50dp"
+        android:layout_toLeftOf="@id/verticalSeekbar"
+        android:text="@string/cancel"/>
 </RelativeLayout>

@@ -4,7 +4,6 @@ import android.content.Context;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
-import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
@@ -25,6 +24,7 @@ public class AlloButton extends RelativeLayout {
     private VerticalSeekBar mVerticalSeekBar;
     private TextView mPrivateYawn;
     private TextView mPublicYawn;
+    private TextView mCancelYawn;
     public static final int SEEK_BAR_MAX = 100;
     public static final int FIRST_STEP_SNAPPER = 1; //was 20
     private final int SENSITIVITY = 1; //was 10
@@ -34,6 +34,8 @@ public class AlloButton extends RelativeLayout {
     private View mFabSendYawn;
     private boolean mIsSmall = true;
     private IOnViewMeasuredListener mOnViewMeasuredListener;
+    private int mSmallHeightDp = 100;
+    private int mBigHeightDp = 350;
 
     public AlloButton(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -54,15 +56,16 @@ public class AlloButton extends RelativeLayout {
             @Override
             public void measured(int width, int height) {
                 Log.d(TAG, "measured() called with: width = [" + width + "], height = [" + height + "]");
-                changeSize(true);
+//                changeHeight(true);
                 mOnViewMeasuredListener = null;
             }
         };
         mVerticalSeekBar.setOnViewMeasuredListener(mOnViewMeasuredListener);
 
         mFabSendYawn = findViewById(R.id.fabSendYawn);
-        mPrivateYawn = (TextView) findViewById(R.id.privateYawn);
-        mPublicYawn = (TextView) findViewById(R.id.publicYawn);
+        mPrivateYawn = (TextView) findViewById(R.id.localYawn);
+        mPublicYawn = (TextView) findViewById(R.id.globalYawn);
+        mCancelYawn = (TextView) findViewById(R.id.cancel_yawn);
         initSeekBar();
     }
 
@@ -83,7 +86,7 @@ public class AlloButton extends RelativeLayout {
     }
 */
     private void initSeekBar() {
-//        changeSize(true);
+//        changeHeight(true);
         Log.d(TAG, "initSeekBar: width = " + mVerticalSeekBar.getMeasuredWidth() + " height = " + mVerticalSeekBar.getMeasuredHeight());
 
         mVerticalSeekBar.setProgress(MINIMAL_PROGRESS);
@@ -100,26 +103,40 @@ public class AlloButton extends RelativeLayout {
 
 //        final Drawable drawableTransparent = ContextCompat.getDrawable(getContext(), android.R.drawable.screen_background_light_transparent);
         mDrawableTransparent = null;
-        mDrawableNormal = ContextCompat.getDrawable(getContext(), R.drawable.progress);
+        mDrawableNormal = getContext().getResources().getDrawable(R.drawable.progress);
+
         mVerticalSeekBar.setProgressDrawable(mDrawableTransparent);
 
         mVerticalSeekBar.setOnSeekBarChangeListener(getSeekBarChangeListener(firstStepSnapper, privateYawnStartRange, privateYawnEndRange, publicYawnStartRange, publicYawnEndRange, mDrawableTransparent, mDrawableNormal));
         Log.d(TAG, "initSeekBar: width = " + mVerticalSeekBar.getMeasuredWidth() + " height = " + mVerticalSeekBar.getMeasuredHeight());
     }
 
-    private void changeSize(boolean isSmall) {
-        int small = 100;
-        int big = 350;
+    private void changeHeight(boolean isSmall) {
         int width = mVerticalSeekBar.getWidth();
         if (isSmall) {
-            small = Tools.convertDpToPx(small, getContext());
-            mVerticalSeekBar.setLayoutParams(new RelativeLayout.LayoutParams(width, small));
             mIsSmall = true;
+            mSmallHeightDp = Tools.convertDpToPx(mSmallHeightDp, getContext());
+            LayoutParams params = new LayoutParams(width, mSmallHeightDp);
+            setTopMargin(params);
+            mVerticalSeekBar.setLayoutParams(params);
+            mVerticalSeekBar.setProgress(SEEK_BAR_MAX);
         } else {
-            big = Tools.convertDpToPx(big, getContext());
-            mVerticalSeekBar.setLayoutParams(new LayoutParams(width, big));
-            mVerticalSeekBar.setProgress(10);
             mIsSmall = false;
+            mBigHeightDp = Tools.convertDpToPx(mBigHeightDp, getContext());
+            LayoutParams params = new LayoutParams(width, mBigHeightDp);
+            setTopMargin(params);
+            mVerticalSeekBar.setLayoutParams(params);
+            mVerticalSeekBar.setProgress(20);
+        }
+    }
+
+    private void setTopMargin(LayoutParams params) {
+        int top = 0;
+        if (mIsSmall) {
+            top = Tools.convertDpToPx(350, getContext());
+            params.setMargins(0, top, 0, 0);
+        } else {
+            params.setMargins(0, top, 0, 0);
         }
     }
 
@@ -134,7 +151,7 @@ public class AlloButton extends RelativeLayout {
                 int step = firstStepSnapper[0];
                 progress = initStep(seekBar, progress, step);
 
-                checkHeight(progress);
+//                checkHeight(progress);
 
                 snapThumb(progress, step);
                 showHideBorder(progress);
@@ -199,11 +216,11 @@ public class AlloButton extends RelativeLayout {
     private void checkHeight(int progress) {
         if (mIsSmall) {
             if (progress >= SEEK_BAR_MAX) {
-                changeSize(false);
+                changeHeight(false);
             }
         } else {
             if (progress <= 5) {
-                changeSize(true);
+                changeHeight(true);
             }
 
         }
@@ -222,8 +239,9 @@ public class AlloButton extends RelativeLayout {
         }
 
         mVerticalSeekBar.setProgressDrawable(drawable);
-//        mPrivateYawn.setVisibility(visible);
+        mPrivateYawn.setVisibility(visible);
         mPublicYawn.setVisibility(visible);
+        mCancelYawn.setVisibility(visible);
     }
 
 }

@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">AlloSliderButton</string>
     <string name="random_yawn">Random  yawn</string>
+    <string name="global">Global</string>
+    <string name="private_yawn">Local</string>
+    <string name="cancel">Cancel</string>
 </resources>
