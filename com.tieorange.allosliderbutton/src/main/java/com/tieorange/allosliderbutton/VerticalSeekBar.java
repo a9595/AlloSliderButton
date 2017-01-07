@@ -1,13 +1,17 @@
 package com.tieorange.allosliderbutton;
 
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Rect;
+import android.graphics.RectF;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
+import android.view.ViewConfiguration;
 import android.widget.SeekBar;
 
 import static com.tieorange.allosliderbutton.AlloButton.MINIMAL_PROGRESS;
@@ -23,8 +27,14 @@ public class VerticalSeekBar extends SeekBar {
     private IOnViewMeasuredListener mOnViewMeasuredListener;
     //http://stackoverflow.com/questions/9787906/android-seekbar-solution -- react only on finger move. not tapping
 
+    //thumb onclick:
+    private int scaledTouchSlop = 0;
+    private float initTouchY = 0;
+    private boolean thumbPressed = false;
+
     public VerticalSeekBar(Context context) {
         super(context);
+        init(context);
     }
 
     public VerticalSeekBar(Context context, AttributeSet attrs, int defStyle) {
@@ -45,9 +55,19 @@ public class VerticalSeekBar extends SeekBar {
         setMeasuredDimension(getMeasuredHeight(), getMeasuredWidth());
     }
 
+    private void init(Context context) {
+        scaledTouchSlop = ViewConfiguration.get(context).getScaledTouchSlop();
+    }
+
     protected synchronized void onDraw(Canvas c) {
         c.rotate(-90);
         c.translate(-getHeight(), 0);
+
+//        c.save();
+//        c.rotate(-90);
+//        c.translate(-getHeight(), 0);
+        super.onDraw(c);
+//        c.restore();
 
         /*String progressText = String.valueOf(getProgress());
         Rect bounds = new Rect();
@@ -62,10 +82,9 @@ public class VerticalSeekBar extends SeekBar {
         mThumbY = getHeight() / 2f + bounds.height() / 2f;
         Log.d(TAG, "onDraw() called with: X = [" + mThumbX + "]   Y = " + mThumbY);
 */
-        super.onDraw(c);
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         if (!isEnabled()) {
@@ -81,22 +100,63 @@ public class VerticalSeekBar extends SeekBar {
             case MotionEvent.ACTION_DOWN:
                 // TODO: 30/09/16    //http://stackoverflow.com/questions/9787906/android-seekbar-solution -- react only on finger move. not tapping
                 Log.d(TAG, "onTouchEvent: DOWN");
+
+                //thumb:
+                Drawable thumb;
+                thumb = getThumb();
+                if (thumb != null) {
+                    //contains current position of thumb in view as bounds
+                    RectF bounds = new RectF(thumb.getBounds());
+
+                    thumbPressed = bounds.contains(event.getX(), event.getY());
+                    Log.d("Thumb", "onTouchEvent() called with touch:  = [" + event.getX() + "; " + event.getY() + "]");
+                    Log.d("Thumb", "onTouchEvent() called with rectangle:  = left:" + bounds.left + "; right: "
+                            + bounds.right + "; bottom = " + bounds.bottom + "; top = " + bounds.top);
+
+                    if (thumbPressed) {
+                        Log.d("Thumb", "pressed");
+                        initTouchY = event.getY();
+                        return true;
+                    }
+                }
+
                 break;
             case MotionEvent.ACTION_MOVE:
+                // thumb:
+                if (thumbPressed) {
+                    if (Math.abs(initTouchY - event.getY()) > scaledTouchSlop) {
+                        initTouchY = 0;
+                        thumbPressed = false;
+                        return super.onTouchEvent(event);
+                    }
+                    Log.d("Thumb", "move blocked");
+                    return true;
+                }
+
                 i = getMax() - (int) (getMax() * event.getY() / getHeight());
                 Log.d(TAG, "onTouchEvent: MOVE = " + i);
                 i = checkMinimalValue(i);
                 setProgress(i);
                 onSizeChanged(getWidth(), getHeight(), 0, 0);
+
+
                 break;
             case MotionEvent.ACTION_UP:
+                // thumb:
+                if (thumbPressed) {
+                    Log.d("Thumb", "was pressed -- listener call");
+                    thumbPressed = false;
+                }
+
+
                 i = 0;
                 i = getMax() - (int) (getMax() * event.getY() / getHeight());
                 setProgress(i);
                 onSizeChanged(getWidth(), getHeight(), 0, 0);
-//                i = checkMinimalValue(i);
-
+                // i = checkMinimalValue(i);
                 setProgress(MINIMAL_PROGRESS);
+
+
                 Log.i("ACTION_UP: Progress = ", getProgress() + "");
                 break;
 
@@ -107,9 +167,13 @@ public class VerticalSeekBar extends SeekBar {
         return true;
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     private boolean isTouchInThumbBounds(MotionEvent event) {
-        Rect bounds = getThumb().getBounds();
+        Rect bounds = null;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN) {
+            bounds = getThumb().getBounds();
+        } else {
+            return false;
+        }
         int x = (int) event.getX() + getLeft();
         int y = (int) event.getY() + getTop();
 
