@@ -23,6 +23,11 @@ public class DraggableActivity extends AppCompatActivity implements View.OnTouch
         _root = (ViewGroup) findViewById(R.id.activity_draggable);
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
 
+//        initFAB(fab);
+//        _root.addView(_view);
+    }
+
+    private void initFAB(FloatingActionButton fab) {
         RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(150, 50);
         layoutParams.leftMargin = 50;
         layoutParams.topMargin = 50;
@@ -31,7 +36,6 @@ public class DraggableActivity extends AppCompatActivity implements View.OnTouch
 //        fab.setLayoutParams(layoutParams);
 
         fab.setOnTouchListener(this);
-//        _root.addView(_view);
     }
 
     public boolean onTouch(View view, MotionEvent event) {

@@ -17,8 +17,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/ic_zzz"
+        android:visibility="gone"
         app:elevation="4dp"
         />
+
+    <com.tieorange.allosliderbutton.draggableFAB.AlloDraggableButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"/>
 
 
 </RelativeLayout>
