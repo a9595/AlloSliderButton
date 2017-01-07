@@ -28,7 +28,7 @@ public class DraggableActivity extends AppCompatActivity implements View.OnTouch
         layoutParams.topMargin = 50;
         layoutParams.bottomMargin = -250;
         layoutParams.rightMargin = -250;
-        fab.setLayoutParams(layoutParams);
+//        fab.setLayoutParams(layoutParams);
 
         fab.setOnTouchListener(this);
 //        _root.addView(_view);
