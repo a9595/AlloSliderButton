@@ -32,10 +32,14 @@ public class AlloDraggableButton extends RelativeLayout implements View.OnTouchL
     private TextView mTvGlobal;
     private TextView mTvLocal;
     private TextView mTvCancel;
+    private Float mProgressLineHighY;
+    private float mHighHighestPoint;
+    private float mHighLowestPoint;
     private float mProgressLineMiddleY;
     private float mMediumHighestPoint;
     private float mMediumLowestPoint;
     private boolean mTvLocalIsBold = false;
+    private boolean mIsFabInMiddleZone;
 
     public AlloDraggableButton(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -67,12 +71,19 @@ public class AlloDraggableButton extends RelativeLayout implements View.OnTouchL
                 mX_initial_position = mFab.getX();
                 if (mY_initial_position == null) {
                     mY_initial_position = mFab.getY();
+
+                    // Highest (Global)
+                    mProgressLineHighY = 0f;
+                    mHighHighestPoint = mProgressLineHighY - THRESHOLD_SNAPPING;
+                    mHighLowestPoint = mProgressLineHighY + THRESHOLD_SNAPPING;
+
+                    // Middle (Local)
+                    mProgressLineMiddleY = mY_initial_position / 2;
+                    mMediumHighestPoint = mProgressLineMiddleY - THRESHOLD_SNAPPING;
+                    mMediumLowestPoint = mProgressLineMiddleY + THRESHOLD_SNAPPING;
                 }
-                mProgressLineMiddleY = mY_initial_position / 2;
-                mMediumHighestPoint = mProgressLineMiddleY - THRESHOLD_SNAPPING;
-                mMediumLowestPoint = mProgressLineMiddleY + THRESHOLD_SNAPPING;
-                Log.d(TAG, "init() called with:  X=" + mX_initial_position + "; Y=" + mY_initial_position);
-                Log.d(TAG, "init() called with:  mMediumHighestPoint =" + mMediumHighestPoint + ";   mMediumLowestPoint=" + mMediumLowestPoint);
+                Log.d(TAG, "OnGlobalLayoutListener() called with:  X=" + mX_initial_position + "; Y=" + mY_initial_position);
+                Log.d(TAG, "OnGlobalLayoutListener() called with:  mMediumHighestPoint =" + mMediumHighestPoint + ";   mMediumLowestPoint=" + mMediumLowestPoint);
             }
         });
         mFab.setOnTouchListener(this);
@@ -99,8 +110,9 @@ public class AlloDraggableButton extends RelativeLayout implements View.OnTouchL
                     changeVisibilityHUD(true);
                 }
 
-                makeTextViewsBold(yNew);
-
+//                makeTextViewsBold(yNew);
+                makeTextViewsBoldGeneric(yNew, mMediumLowestPoint, mMediumHighestPoint, mTvLocal);
+                makeTextViewsBoldGeneric(yNew, mHighLowestPoint, mHighHighestPoint, mTvGlobal);
                 Log.d(TAG, "onTouch() called with:  X=" + view.getX() + "; Y=" + view.getY());
                 break;
 
@@ -132,8 +144,8 @@ public class AlloDraggableButton extends RelativeLayout implements View.OnTouchL
 
     private void makeTextViewsBold(Float yNew) {
         // Middle:
-        boolean isFabInMiddle = yNew < mMediumLowestPoint && yNew > mMediumHighestPoint;
-        if (isFabInMiddle && !mTvLocalIsBold) {
+        mIsFabInMiddleZone = yNew < mMediumLowestPoint && yNew > mMediumHighestPoint;
+        if (mIsFabInMiddleZone && !mTvLocalIsBold) {
             mTvLocal.post(new Runnable() {
                 @Override
                 public void run() {
@@ -143,13 +155,36 @@ public class AlloDraggableButton extends RelativeLayout implements View.OnTouchL
             });
 
             Log.d(TAG, "MIDDLE [" + yNew + "]");
-        } else if (!isFabInMiddle && mTvLocalIsBold) {
+        } else if (!mIsFabInMiddleZone && mTvLocalIsBold) {
             Log.d(TAG, "NOT MIDDLE [" + yNew + "]");
             mTvLocal.post(new Runnable() {
                 @Override
                 public void run() {
                     mTvLocal.setTypeface(null, Typeface.NORMAL);
                     mTvLocalIsBold = false;
+                }
+            });
+        }
+    }
+
+    private void makeTextViewsBoldGeneric(Float yNew, float lowestPoint, float highestPoint, final TextView textView) {
+        boolean mIsFabInZone = yNew < lowestPoint && yNew > highestPoint;
+        boolean isFabNotInZone = yNew > lowestPoint || yNew < highestPoint;
+        if (mIsFabInZone) {
+            textView.post(new Runnable() {
+                @Override
+                public void run() {
+                    textView.setTypeface(null, Typeface.BOLD);
+
+                }
+            });
+            Log.d(TAG, "In Zone [" + yNew + "]");
+        }
+        if (isFabNotInZone) {
+            mTvLocal.post(new Runnable() {
+                @Override
+                public void run() {
+                    mTvLocal.setTypeface(null, Typeface.NORMAL);
                 }
             });
         }
