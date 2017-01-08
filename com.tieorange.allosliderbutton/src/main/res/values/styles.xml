@@ -19,7 +19,7 @@
 
     <style name="textViewLeftToSlider">
         <item name="android:textColor">@android:color/black</item>
-        <item name="android:visibility">gone</item>
+        <item name="android:visibility">invisible</item>
     </style>
 
 </resources>

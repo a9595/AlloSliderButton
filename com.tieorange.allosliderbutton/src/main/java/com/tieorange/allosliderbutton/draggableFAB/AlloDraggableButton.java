@@ -1,5 +1,6 @@
 package com.tieorange.allosliderbutton.draggableFAB;
 
+import android.animation.Animator;
 import android.content.Context;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
@@ -8,9 +9,9 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewTreeObserver;
+import android.view.animation.Animation;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.tieorange.allosliderbutton.R;
 
@@ -46,6 +47,9 @@ public class AlloDraggableButton extends RelativeLayout implements View.OnTouchL
     private ITextViewSelectedListener mIMiddleTextViewSelectedListener;
     private IFabOnClickListener mIFabOnClickListener;
     private IPercentsSliderListener mIPercentsSliderListener;
+    private Animation mAnimationFadeIn;
+    private Animation mAnimationFadeOut;
+    private boolean mIsVisibleHUD;
 
     public AlloDraggableButton(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -68,6 +72,14 @@ public class AlloDraggableButton extends RelativeLayout implements View.OnTouchL
         mTvCancel = (TextView) findViewById(R.id.cancel);
 
         initFAB();
+        initAnimations();
+    }
+
+    private void initAnimations() {
+        mAnimationFadeIn = AnimationTools.getAnimationFadeIn();
+        mAnimationFadeOut = AnimationTools.getAnimationFadeOut();
+//        mProgressLine.startAnimation(animationFadeIn);
+//        mProgressLine.setVisibility(VISIBLE);
     }
 
     private void initFAB() {
@@ -187,6 +199,7 @@ public class AlloDraggableButton extends RelativeLayout implements View.OnTouchL
         changeVisibilityView(mTvGlobal, isVisible);
         changeVisibilityView(mTvLocal, isVisible);
         changeVisibilityView(mTvCancel, isVisible);
+        mIsVisibleHUD = isVisible;
     }
 
     private void makeTextViewsBold(Float yNew) {
@@ -248,15 +261,36 @@ public class AlloDraggableButton extends RelativeLayout implements View.OnTouchL
     }
 
     // TODO: 1/8/17 Animate
-    private void changeVisibilityView(View view, boolean isVisible) {
+    private void changeVisibilityView(final View view, boolean isVisible) {
         if (view == null) return;
 
-        int visibility = View.VISIBLE;
-        if (!isVisible) {
-            visibility = View.GONE;
+        if (isVisible || !mIsVisibleHUD) {
+            if (isVisible && !mIsVisibleHUD) {
+                Animation animationFadeIn = AnimationTools.getAnimationFadeIn();
+                view.setVisibility(View.VISIBLE);
+                view.startAnimation(animationFadeIn);
+            }
+        } else {
+            Animation animationFadeOut = AnimationTools.getAnimationFadeOut();
+            animationFadeOut.setAnimationListener(new Animation.AnimationListener() {
+                @Override
+                public void onAnimationStart(Animation animation) {
+
+                }
+
+                @Override
+                public void onAnimationEnd(Animation animation) {
+                    view.setVisibility(View.GONE);
+                }
+
+                @Override
+                public void onAnimationRepeat(Animation animation) {
+
+                }
+            });
+            view.startAnimation(animationFadeOut);
         }
 
-        view.setVisibility(visibility);
     }
 
     private void performMove(View view, Float yNew) {
