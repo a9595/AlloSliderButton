@@ -9,7 +9,11 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewTreeObserver;
+import android.view.animation.AccelerateDecelerateInterpolator;
+import android.view.animation.AccelerateInterpolator;
 import android.view.animation.Animation;
+import android.view.animation.DecelerateInterpolator;
+import android.view.animation.TranslateAnimation;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -143,7 +147,7 @@ public class AlloDraggableButton extends RelativeLayout implements View.OnTouchL
                 if (mLastAction == MotionEvent.ACTION_MOVE) {
                     Log.d(TAG, "onTouch() called with:  X=" + view.getX() + "; Y=" + view.getY());
                     checkListeners(yNewOfFAB);
-                    restoreInitialX_Y();
+                    restoreInitialX_Y(yNewOfFAB);
                     changeVisibilityHUD(false);
                 }
                 break;
@@ -305,9 +309,15 @@ public class AlloDraggableButton extends RelativeLayout implements View.OnTouchL
 
 
     // TODO: 1/8/17 Animate
-    private void restoreInitialX_Y() {
+    private void restoreInitialX_Y(Float yNewOfFAB) {
         mFab.setX(mX_initial_position);
-        mFab.setY(mY_initial_position);
+//        mFab.setY(mY_initial_position);
+
+        // Animation:
+        float durationCoefficient = 1.3f; // the bigger - the longer is duration
+        Float duration = (mY_initial_position - yNewOfFAB) / durationCoefficient;
+        mFab.animate().y(AlloDraggableButton.mY_initial_position).setDuration(duration.longValue()).setInterpolator(new DecelerateInterpolator()).start();
+
     }
 
     public void setOnTopTextViewListener(ITextViewSelectedListener iTextViewSelectedListener) {
