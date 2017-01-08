@@ -20,7 +20,7 @@ import com.tieorange.allosliderbutton.R;
 
 public class AlloDraggableButton extends RelativeLayout implements View.OnTouchListener {
     private static final String TAG = AlloDraggableButton.class.getSimpleName();
-    private static int THRESHOLD_SNAPPING = 30;
+    private static int THRESHOLD_SNAPPING = 50;
     private Context mContext;
     private FloatingActionButton mFab;
     private float mDeltaY;
@@ -113,7 +113,7 @@ public class AlloDraggableButton extends RelativeLayout implements View.OnTouchL
 //                makeTextViewsBold(yNew);
 //                makeTextViewsBoldGeneric(yNew, mMediumLowestPoint, mMediumHighestPoint, mTvLocal);
 //                makeTextViewsBoldGeneric(yNew, mTopLowestPoint, mTopHighestPoint, mTvGlobal);
-                makeTextViewsBoldGenericGeneral(yNew);
+                makeTextViewsBold(yNew);
                 Log.d(TAG, "onTouch() called with:  X=" + view.getX() + "; Y=" + view.getY());
                 break;
 
@@ -144,54 +144,6 @@ public class AlloDraggableButton extends RelativeLayout implements View.OnTouchL
     }
 
     private void makeTextViewsBold(Float yNew) {
-        // Middle:
-        mIsFabInMiddleZone = yNew < mMediumLowestPoint && yNew > mMediumHighestPoint;
-        if (mIsFabInMiddleZone && !mTvLocalIsBold) {
-            mTvLocal.post(new Runnable() {
-                @Override
-                public void run() {
-                    mTvLocal.setTypeface(null, Typeface.BOLD);
-                    mTvLocalIsBold = true;
-                }
-            });
-
-            Log.d(TAG, "MIDDLE [" + yNew + "]");
-        } else if (!mIsFabInMiddleZone && mTvLocalIsBold) {
-            Log.d(TAG, "NOT MIDDLE [" + yNew + "]");
-            mTvLocal.post(new Runnable() {
-                @Override
-                public void run() {
-                    mTvLocal.setTypeface(null, Typeface.NORMAL);
-                    mTvLocalIsBold = false;
-                }
-            });
-        }
-    }
-
-    private void makeTextViewsBoldGeneric(Float yNew, float lowestPoint, float highestPoint, final TextView textView) {
-        boolean mIsFabInZone = yNew < lowestPoint && yNew > highestPoint;
-        boolean isFabNotInZone = yNew > lowestPoint || yNew < highestPoint;
-        if (mIsFabInZone) {
-            textView.post(new Runnable() {
-                @Override
-                public void run() {
-                    textView.setTypeface(null, Typeface.BOLD);
-
-                }
-            });
-            Log.d(TAG, "In Zone [" + yNew + "]");
-        }
-        if (isFabNotInZone) {
-            mTvLocal.post(new Runnable() {
-                @Override
-                public void run() {
-                    mTvLocal.setTypeface(null, Typeface.NORMAL);
-                }
-            });
-        }
-    }
-
-    private void makeTextViewsBoldGenericGeneral(Float yNew) {
         // TOP:
         boolean mIsFabInZone = yNew < mTopLowestPoint && yNew > mTopHighestPoint;
         boolean isFabNotInZone = yNew > mTopLowestPoint || yNew < mTopHighestPoint;
@@ -203,9 +155,19 @@ public class AlloDraggableButton extends RelativeLayout implements View.OnTouchL
 
                 }
             });
-            Log.d(TAG, "In Zone [" + yNew + "]");
+            Log.d(TAG, "In Zone Top [" + yNew + "]");
         }
         if (isFabNotInZone) {
+            mTvGlobal.post(new Runnable() {
+                @Override
+                public void run() {
+                    mTvLocal.setTypeface(null, Typeface.NORMAL);
+                }
+            });
+        }
+
+        // TODO: 1/8/17 RM
+        if (yNew > 50) {
             mTvGlobal.post(new Runnable() {
                 @Override
                 public void run() {
@@ -223,10 +185,11 @@ public class AlloDraggableButton extends RelativeLayout implements View.OnTouchL
                 @Override
                 public void run() {
                     mTvLocal.setTypeface(null, Typeface.BOLD);
+                    mTvGlobal.setTypeface(null, Typeface.NORMAL); // TODO: 1/8/17 RM
 
                 }
             });
-            Log.d(TAG, "In Zone [" + yNew + "]");
+            Log.d(TAG, "In Zone Middle [" + yNew + "]");
         }
         if (isFabNotInZoneMiddle) {
             mTvLocal.post(new Runnable() {
