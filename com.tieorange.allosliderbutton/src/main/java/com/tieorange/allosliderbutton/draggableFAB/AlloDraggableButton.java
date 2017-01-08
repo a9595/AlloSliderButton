@@ -118,9 +118,6 @@ public class AlloDraggableButton extends RelativeLayout implements View.OnTouchL
                     changeVisibilityHUD(true);
                 }
 
-//                makeTextViewsBold(yNewOfFAB);
-//                makeTextViewsBoldGeneric(yNewOfFAB, mMediumLowestPoint, mMediumHighestPoint, mTvLocal);
-//                makeTextViewsBoldGeneric(yNewOfFAB, mTopLowestPoint, mTopHighestPoint, mTvGlobal);
                 makeTextViewsBold(yNewOfFAB);
                 Log.d(TAG, "onTouch() called with:  X=" + view.getX() + "; Y=" + view.getY());
                 break;
@@ -150,9 +147,10 @@ public class AlloDraggableButton extends RelativeLayout implements View.OnTouchL
         boolean fabInZoneMiddle = isFabInZoneMiddle(yNewOfFAB);
         boolean fabInZoneTop = isFabInZoneTop(yNewOfFAB);
 
-        if (fabInZoneMiddle) {
+        if (fabInZoneMiddle && mIMiddleTextViewSelectedListener != null) {
             mIMiddleTextViewSelectedListener.selected();
-        } else if (fabInZoneTop) {
+
+        } else if (fabInZoneTop && mITopTextViewSelectedListener != null) {
             mITopTextViewSelectedListener.selected();
         }
 
