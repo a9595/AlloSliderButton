@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools"
                 android:id="@+id/rootLayoutFabDraggable"
                 android:layout_width="300dp"
                 android:layout_height="300dp"
@@ -22,6 +23,35 @@
         android:layout_alignParentRight="true"
         android:layout_marginBottom="10dp"
         android:layout_marginRight="10dp"
-        android:background="@drawable/progress"/>
+        android:background="@drawable/progress"
+        android:visibility="gone"
+        tools:visibility="visible"/>
+
+    <TextView
+        android:id="@+id/global"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginRight="@dimen/marginRightTextViews"
+        android:layout_marginTop="10dp"
+        android:text="Global"/>
+
+    <TextView
+        android:id="@+id/local"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@id/global"
+        android:layout_centerVertical="true"
+        android:text="Local"/>
+
+    <TextView
+        android:id="@+id/cancel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@id/global"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="20dp"
+        android:text="Cancel"/>
 
 </RelativeLayout>
