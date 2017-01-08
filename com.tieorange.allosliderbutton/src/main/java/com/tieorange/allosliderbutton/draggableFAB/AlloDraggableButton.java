@@ -6,7 +6,6 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
@@ -21,16 +20,15 @@ public class AlloDraggableButton extends RelativeLayout implements View.OnTouchL
     private static final String TAG = AlloDraggableButton.class.getSimpleName();
     private Context mContext;
     private FloatingActionButton mFab;
-    private View mRootLayout;
-    private float dY;
-    private int lastAction;
-    private View mRootView;
+    private float mDeltaY;
+    private int mLastAction;
     private float mX_initial_position;
     private float mY_initial_position;
-    private ViewGroup.LayoutParams mInitLayoutParams;
+    private View mRootView;
 
     public AlloDraggableButton(Context context, AttributeSet attrs) {
         super(context, attrs);
+
         init(context);
     }
 
@@ -40,10 +38,10 @@ public class AlloDraggableButton extends RelativeLayout implements View.OnTouchL
     }
 
     private void init(Context context) {
+        if (isInEditMode()) return;
         mRootView = inflate(context, R.layout.allo_draggable_button_layout, this);
         mContext = context;
 
-        mRootLayout = findViewById(R.id.rootLayoutFabDraggable);
         mFab = (FloatingActionButton) findViewById(R.id.fabDraggable);
 
         initFAB();
@@ -67,29 +65,22 @@ public class AlloDraggableButton extends RelativeLayout implements View.OnTouchL
     public boolean onTouch(View view, MotionEvent event) {
         switch (event.getActionMasked()) {
             case MotionEvent.ACTION_DOWN:
-                dY = view.getY() - event.getRawY();
-                lastAction = MotionEvent.ACTION_DOWN;
+                mDeltaY = view.getY() - event.getRawY();
+                mLastAction = MotionEvent.ACTION_DOWN;
 
                 break;
 
             case MotionEvent.ACTION_MOVE:
-                float yNew = event.getRawY() + dY;
-                if (yNew < 0) {
-                    view.setY(0);
-                } else if (yNew > mY_initial_position) {
-                    view.setY(mY_initial_position);
-                } else {
-                    view.setY(yNew);
-                }
-                lastAction = MotionEvent.ACTION_MOVE;
+                float yNew = event.getRawY() + mDeltaY;
+                performMove(view, yNew);
 
                 Log.d(TAG, "onTouch() called with:  X=" + view.getX() + "; Y=" + view.getY());
                 break;
 
             case MotionEvent.ACTION_UP:
-                if (lastAction == MotionEvent.ACTION_DOWN)
+                if (mLastAction == MotionEvent.ACTION_DOWN)
                     Toast.makeText(mContext, "Clicked!", Toast.LENGTH_SHORT).show();
-                if (lastAction == MotionEvent.ACTION_MOVE) {
+                if (mLastAction == MotionEvent.ACTION_MOVE) {
                     Log.d(TAG, "onTouch() called with:  X=" + view.getX() + "; Y=" + view.getY());
                     restoreInitialX_Y();
                 }
@@ -101,6 +92,17 @@ public class AlloDraggableButton extends RelativeLayout implements View.OnTouchL
         return true;
 
 
+    }
+
+    private void performMove(View view, float yNew) {
+        if (yNew < 0) {
+            view.setY(0);
+        } else if (yNew > mY_initial_position) {
+            view.setY(mY_initial_position);
+        } else {
+            view.setY(yNew);
+        }
+        mLastAction = MotionEvent.ACTION_MOVE;
     }
 
 

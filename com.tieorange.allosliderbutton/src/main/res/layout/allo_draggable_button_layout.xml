@@ -3,7 +3,8 @@
                 android:id="@+id/rootLayoutFabDraggable"
                 android:layout_width="300dp"
                 android:layout_height="300dp"
-                android:background="@color/colorPrimary">
+                android:background="@color/colorPrimary"
+                android:theme="@style/Theme.AppCompat">
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fabDraggable"
@@ -14,5 +15,13 @@
         android:elevation="4dp"
         android:src="@drawable/ic_zzz"/>
 
+    <View
+        android:id="@+id/progressLine"
+        android:layout_width="30dp"
+        android:layout_height="match_parent"
+        android:layout_alignParentRight="true"
+        android:layout_marginBottom="10dp"
+        android:layout_marginRight="10dp"
+        android:background="@drawable/progress"/>
 
 </RelativeLayout>
