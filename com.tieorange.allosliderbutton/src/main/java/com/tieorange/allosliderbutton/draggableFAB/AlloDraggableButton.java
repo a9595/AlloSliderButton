@@ -45,6 +45,7 @@ public class AlloDraggableButton extends RelativeLayout implements View.OnTouchL
     private ITextViewSelectedListener mITopTextViewSelectedListener;
     private ITextViewSelectedListener mIMiddleTextViewSelectedListener;
     private IFabOnClickListener mIFabOnClickListener;
+    private IPercentsSliderListener mIPercentsSliderListener;
 
     public AlloDraggableButton(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -129,9 +130,9 @@ public class AlloDraggableButton extends RelativeLayout implements View.OnTouchL
                 }
                 if (mLastAction == MotionEvent.ACTION_MOVE) {
                     Log.d(TAG, "onTouch() called with:  X=" + view.getX() + "; Y=" + view.getY());
+                    checkListeners(yNewOfFAB);
                     restoreInitialX_Y();
                     changeVisibilityHUD(false);
-                    checkListeners(yNewOfFAB);
                 }
                 break;
 
@@ -152,6 +153,18 @@ public class AlloDraggableButton extends RelativeLayout implements View.OnTouchL
 
         } else if (fabInZoneTop && mITopTextViewSelectedListener != null) {
             mITopTextViewSelectedListener.selected();
+        }
+
+        // Y_init = 400; Y_new = 200; X = 50%;
+        // Calculate the percentage of slider before finger release
+        if (mIPercentsSliderListener != null) {
+            int percents = (int) ((yNewOfFAB * 100) / mY_initial_position);
+            percents = 100 - percents;
+            if (percents > 100) percents = 100;
+            if (percents < 0) percents = 0;
+
+            if (mProgressLine.getVisibility() == View.VISIBLE)
+                mIPercentsSliderListener.released(percents);
         }
 
 
@@ -269,6 +282,10 @@ public class AlloDraggableButton extends RelativeLayout implements View.OnTouchL
 
     public void setOnMiddleTextViewListener(ITextViewSelectedListener iTextViewSelectedListener) {
         mIMiddleTextViewSelectedListener = iTextViewSelectedListener;
+    }
+
+    public void setOnPercentsSliderListener(IPercentsSliderListener iPercentsSliderListener) {
+        mIPercentsSliderListener = iPercentsSliderListener;
     }
 
     public void setOnFabClickListener(IFabOnClickListener iFabOnClickListener) {

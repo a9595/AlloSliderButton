@@ -8,6 +8,7 @@ import android.widget.Toast;
 
 import com.tieorange.allosliderbutton.draggableFAB.AlloDraggableButton;
 import com.tieorange.allosliderbutton.draggableFAB.IFabOnClickListener;
+import com.tieorange.allosliderbutton.draggableFAB.IPercentsSliderListener;
 import com.tieorange.allosliderbutton.draggableFAB.ITextViewSelectedListener;
 
 public class DraggableActivity extends AppCompatActivity {
@@ -19,10 +20,15 @@ public class DraggableActivity extends AppCompatActivity {
         setContentView(R.layout.activity_draggable);
         mAlloButton = (AlloDraggableButton) findViewById(R.id.alloButton);
 
+//        initFAB();
+
+    }
+
+    private void initFAB() {
         mAlloButton.setOnMiddleTextViewListener(new ITextViewSelectedListener() {
             @Override
             public void selected() {
-                Toast.makeText(DraggableActivity.this, "middle", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(DraggableActivity.this, "middle", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -40,9 +46,15 @@ public class DraggableActivity extends AppCompatActivity {
             }
         });
 
+        mAlloButton.setOnPercentsSliderListener(new IPercentsSliderListener() {
+            @Override
+            public void released(int percents) {
+                Toast.makeText(DraggableActivity.this, percents + "%", Toast.LENGTH_SHORT).show();
+            }
+        });
+
         Drawable fabDrawable = ContextCompat.getDrawable(this, R.drawable.fab_add);
         mAlloButton.setFabDrawable(fabDrawable);
-
     }
 
 
