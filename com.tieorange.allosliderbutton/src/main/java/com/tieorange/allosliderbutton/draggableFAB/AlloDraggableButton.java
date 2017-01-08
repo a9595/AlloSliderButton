@@ -20,7 +20,8 @@ import com.tieorange.allosliderbutton.R;
 
 public class AlloDraggableButton extends RelativeLayout implements View.OnTouchListener {
     private static final String TAG = AlloDraggableButton.class.getSimpleName();
-    private static Float THRESHOLD_SHOW_HUD = 345f; // TODO: 1/8/17 Calculate dynamically (10% of mY_initial_position)
+    private static Float THRESHOLD_SHOW_HUD;
+    private static final int PERCENTS_OF_THRESHOLD = 88; // how many percents should view go to show HUD (global, local)
     private static int THRESHOLD_SNAPPING = 90;
     private Context mContext;
     private com.github.clans.fab.FloatingActionButton mFab;
@@ -76,8 +77,7 @@ public class AlloDraggableButton extends RelativeLayout implements View.OnTouchL
                 if (mY_initial_position == null) {
                     mY_initial_position = mFab.getY();
 
-                    int percentsOfThreshold = 88;
-                    THRESHOLD_SHOW_HUD = (mY_initial_position * percentsOfThreshold) / 100;
+                    THRESHOLD_SHOW_HUD = (mY_initial_position * PERCENTS_OF_THRESHOLD) / 100;
 
                     // Highest (Global)
                     mProgressLineTopY = 0f;

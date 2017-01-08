@@ -16,6 +16,7 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
         android:background="@color/colorAccent"
+        android:clickable="true"
         android:elevation="4dp"
         android:src="@drawable/ic_zzz"
         fab:fab_colorNormal="@color/colorAccent"

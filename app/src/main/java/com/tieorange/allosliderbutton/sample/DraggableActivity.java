@@ -1,10 +1,13 @@
 package com.tieorange.allosliderbutton.sample;
 
+import android.graphics.drawable.Drawable;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.Toast;
 
 import com.tieorange.allosliderbutton.draggableFAB.AlloDraggableButton;
+import com.tieorange.allosliderbutton.draggableFAB.IFabOnClickListener;
 import com.tieorange.allosliderbutton.draggableFAB.ITextViewSelectedListener;
 
 public class DraggableActivity extends AppCompatActivity {
@@ -30,7 +33,15 @@ public class DraggableActivity extends AppCompatActivity {
             }
         });
 
-//        mAlloButton.seton
+        mAlloButton.setOnFabClickListener(new IFabOnClickListener() {
+            @Override
+            public void onClick() {
+                Toast.makeText(DraggableActivity.this, "Click", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        Drawable fabDrawable = ContextCompat.getDrawable(this, R.drawable.fab_add);
+        mAlloButton.setFabDrawable(fabDrawable);
 
     }
 
