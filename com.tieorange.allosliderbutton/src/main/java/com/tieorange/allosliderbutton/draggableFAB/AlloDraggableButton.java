@@ -20,6 +20,7 @@ import com.tieorange.allosliderbutton.R;
 
 public class AlloDraggableButton extends RelativeLayout implements View.OnTouchListener {
     private static final String TAG = AlloDraggableButton.class.getSimpleName();
+    private static final Float THRESHOLD_SHOW_HUD = 265f;
     private static int THRESHOLD_SNAPPING = 70;
     private Context mContext;
     private FloatingActionButton mFab;
@@ -104,7 +105,7 @@ public class AlloDraggableButton extends RelativeLayout implements View.OnTouchL
 
                 performMove(view, yNew);
 
-                if (yNew >= mY_initial_position) {
+                if (yNew >= THRESHOLD_SHOW_HUD) {
                     changeVisibilityHUD(false);
                 } else {
                     changeVisibilityHUD(true);

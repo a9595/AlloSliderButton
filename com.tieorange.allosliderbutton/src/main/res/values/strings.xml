@@ -4,4 +4,5 @@
     <string name="global">Global</string>
     <string name="private_yawn">Local</string>
     <string name="cancel">Cancel</string>
+    <string name="local">Local</string>
 </resources>
