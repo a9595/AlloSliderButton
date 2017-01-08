@@ -15,7 +15,7 @@ public class Tools {
         }
     }
 
-    static int convertDpToPx(int dp, Context context) {
+    public static int convertDpToPx(int dp, Context context) {
         return Math.round(
                 dp * (context.getResources().getDisplayMetrics().xdpi / DisplayMetrics.DENSITY_DEFAULT));
     }

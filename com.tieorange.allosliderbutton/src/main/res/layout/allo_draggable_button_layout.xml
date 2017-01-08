@@ -2,13 +2,15 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 android:id="@+id/rootLayoutFabDraggable"
                 android:layout_width="300dp"
-                android:layout_height="300dp">
+                android:layout_height="300dp"
+                android:background="@color/colorPrimary">
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fabDraggable"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
         android:elevation="4dp"
         android:src="@drawable/ic_zzz"/>
 
