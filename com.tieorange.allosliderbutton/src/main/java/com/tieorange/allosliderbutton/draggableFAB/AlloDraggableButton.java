@@ -12,7 +12,6 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.tieorange.allosliderbutton.R;
-import com.tieorange.allosliderbutton.Tools;
 
 /**
  * Created by root on 1/7/17.
@@ -47,6 +46,10 @@ public class AlloDraggableButton extends RelativeLayout implements View.OnTouchL
         mRootLayout = findViewById(R.id.rootLayoutFabDraggable);
         mFab = (FloatingActionButton) findViewById(R.id.fabDraggable);
 
+        initFAB();
+    }
+
+    private void initFAB() {
         mFab.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
@@ -56,11 +59,6 @@ public class AlloDraggableButton extends RelativeLayout implements View.OnTouchL
                 Log.d(TAG, "init() called with:  X=" + mX_initial_position + "; Y=" + mY_initial_position);
             }
         });
-//                mFab.setX(0);
-//        mFab.setY(0);
-
-        mInitLayoutParams = mFab.getLayoutParams();
-
         mFab.setOnTouchListener(this);
     }
 
@@ -71,21 +69,29 @@ public class AlloDraggableButton extends RelativeLayout implements View.OnTouchL
             case MotionEvent.ACTION_DOWN:
                 dY = view.getY() - event.getRawY();
                 lastAction = MotionEvent.ACTION_DOWN;
+
                 break;
 
             case MotionEvent.ACTION_MOVE:
-                view.setY(event.getRawY() + dY);
+                float yNew = event.getRawY() + dY;
+                if (yNew < 0) {
+                    view.setY(0);
+                } else if (yNew > mY_initial_position) {
+                    view.setY(mY_initial_position);
+                } else {
+                    view.setY(yNew);
+                }
                 lastAction = MotionEvent.ACTION_MOVE;
+
+                Log.d(TAG, "onTouch() called with:  X=" + view.getX() + "; Y=" + view.getY());
                 break;
 
             case MotionEvent.ACTION_UP:
                 if (lastAction == MotionEvent.ACTION_DOWN)
                     Toast.makeText(mContext, "Clicked!", Toast.LENGTH_SHORT).show();
                 if (lastAction == MotionEvent.ACTION_MOVE) {
-                    // come view back:
-//                    view.setY(event.getRawY() + dY);
                     Log.d(TAG, "onTouch() called with:  X=" + view.getX() + "; Y=" + view.getY());
-                    restoreInitialX_Y(view);
+                    restoreInitialX_Y();
                 }
                 break;
 
@@ -99,26 +105,8 @@ public class AlloDraggableButton extends RelativeLayout implements View.OnTouchL
 
 
     // TODO: 1/7/17  MAKE IT COME BACK
-    private void restoreInitialX_Y(View view) {
+    private void restoreInitialX_Y() {
         mFab.setX(mX_initial_position);
         mFab.setY(mY_initial_position);
-
-        /*RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT); //WRAP_CONTENT param can be FILL_PARENT
-        params.leftMargin = (int) mX_initial_position; //XCOORD
-        params.topMargin = (int) mY_initial_position; //YCOORD*/
-//        view.setLayoutParams(mInitLayoutParams);
-
-
-//        view.setY(Tools.convertDpToPx(200, mContext)); // THIS ONE WORKS ALMOST !!!!
-
-//        RelativeLayout.LayoutParams layoutParams = (LayoutParams) view.getLayoutParams();
-//        layoutParams.addRule(ALIGN_PARENT_BOTTOM);
-//        layoutParams.addRule(ALIGN_PARENT_RIGHT);
-//        layoutParams.bottomMargin = 100;
-//        view.setLayoutParams(layoutParams);
-
-
-//        view.setLeft((int) mX_initial_position);
-//        view.setTop((int) mY_initial_position);
     }
 }
