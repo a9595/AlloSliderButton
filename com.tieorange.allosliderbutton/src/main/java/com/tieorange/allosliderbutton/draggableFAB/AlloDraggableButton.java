@@ -12,6 +12,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.github.clans.fab.FloatingActionMenu;
 import com.tieorange.allosliderbutton.R;
 
 /**
@@ -20,10 +21,10 @@ import com.tieorange.allosliderbutton.R;
 
 public class AlloDraggableButton extends RelativeLayout implements View.OnTouchListener {
     private static final String TAG = AlloDraggableButton.class.getSimpleName();
-    private static final Float THRESHOLD_SHOW_HUD = 265f;
+    private static Float THRESHOLD_SHOW_HUD = 345f;
     private static int THRESHOLD_SNAPPING = 70;
     private Context mContext;
-    private FloatingActionButton mFab;
+    private com.github.clans.fab.FloatingActionButton mFab;
     private float mDeltaY;
     private int mLastAction;
     private float mX_initial_position;
@@ -56,7 +57,7 @@ public class AlloDraggableButton extends RelativeLayout implements View.OnTouchL
     private void init(Context context) {
         mContext = context;
         mRootView = inflate(context, R.layout.allo_draggable_button_layout, this);
-        mFab = (FloatingActionButton) findViewById(R.id.fabDraggable);
+        mFab = (com.github.clans.fab.FloatingActionButton) findViewById(R.id.fabDraggable);
         mProgressLine = findViewById(R.id.progressLine);
         mTvGlobal = (TextView) findViewById(R.id.global);
         mTvLocal = (TextView) findViewById(R.id.local);
@@ -168,7 +169,6 @@ public class AlloDraggableButton extends RelativeLayout implements View.OnTouchL
         }*/
 
 
-
         // MIDDLE:
         boolean mIsFabInZoneMiddle = yNew < mMediumLowestPoint && yNew > mMediumHighestPoint;
         boolean isFabNotInZoneMiddle = yNew > mMediumLowestPoint || yNew < mMediumHighestPoint;
@@ -224,7 +224,7 @@ public class AlloDraggableButton extends RelativeLayout implements View.OnTouchL
         mFab.setY(mY_initial_position);
     }
 
-    public void setOnTopTextViewListener(ITopTextViewListener iTopTextViewListener){
+    public void setOnTopTextViewListener(ITopTextViewListener iTopTextViewListener) {
 
     }
 }

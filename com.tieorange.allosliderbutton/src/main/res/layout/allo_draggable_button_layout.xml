@@ -1,19 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 xmlns:tools="http://schemas.android.com/tools"
+                xmlns:fab="http://schemas.android.com/apk/res-auto"
                 android:id="@+id/rootLayoutFabDraggable"
                 android:layout_width="300dp"
-                android:layout_height="200dp"
+                android:layout_height="250dp"
                 android:theme="@style/Theme.AppCompat"
                 tools:background="@drawable/mapview">
 
-    <android.support.design.widget.FloatingActionButton
+
+
+
+    <com.github.clans.fab.FloatingActionButton
         android:id="@+id/fabDraggable"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
+        android:background="@color/colorAccent"
         android:elevation="4dp"
+        fab:fab_colorNormal="@color/colorAccent"
+        fab:fab_colorPressed="@color/colorAccentDark"
+        fab:fab_colorRipple="@color/colorAccentRipple"
         android:src="@drawable/ic_zzz"/>
 
     <View

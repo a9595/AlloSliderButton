@@ -1,17 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#3F51B5</color>
-    <color name="colorPrimaryDark">#303F9F</color>
-    <color name="fab_color_2_muted">@color/grey_200</color>
-    <color name="grey_200">#EEEEEE</color>
-    <color name="grey_300">#bfbebe</color>
-    <color name="deep_orange_500">#FF5722</color>
-    <color name="lime_A200">#EEFF41</color>
-    <color name="fab_color_1_muted">@color/grey_300</color>
-    <color name="fab_color_1">@color/lime_A200</color>
-    <color name="fab_color_2">@color/deep_orange_500</color>
-    <color name="colorAccentYellow">#ffb300</color>
-
+    <color name="colorPrimary">#47335c</color>
+    <color name="colorPrimaryDark">#372847</color>
     <color name="colorAccent">#00bfa5</color>
+    <color name="colorAccentDark">#00b39a</color>
+    <color name="colorAccentRipple">#009f8a</color>
+    <color name="colorAccentYellow">#ffb300</color>
+    <color name="textSecondary">#dcdbdc</color>
+    <color name="textPrimary">#ffffff</color>
+    <color name="textWarning">#ff1717</color>
+    <color name="textDisabled">#32000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="textLoginDescription">#484848</color>
+    <color name="textSecondaryDark">#535353</color>
+    <color name="loginBackground">#dad6de</color>
+    <color name="backgroundDefault">#f3f3f3</color>
+    <color name="backgroundDark">#8f8f8f</color>
+    <color name="grayish">#bcf3f3f3</color>
+    <color name="colorButtonDisabled">#0c000000</color>
+
+
+    <color name="ic_bg_received">#00bfa5</color>
+
+    <color name="colorRefreshingOne">#00bfa5</color>
+    <color name="colorRefreshingTwo">#00a38d</color>
+    <color name="colorRefreshingThree">#008b78</color>
+    <color name="iconGrayBottomSheet">#757575</color>
 
 </resources>
