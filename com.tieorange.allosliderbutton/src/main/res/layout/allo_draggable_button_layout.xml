@@ -4,7 +4,6 @@
                 android:id="@+id/rootLayoutFabDraggable"
                 android:layout_width="300dp"
                 android:layout_height="300dp"
-                android:background="@color/colorPrimary"
                 android:theme="@style/Theme.AppCompat">
 
     <android.support.design.widget.FloatingActionButton

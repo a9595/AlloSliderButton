@@ -20,7 +20,7 @@ import com.tieorange.allosliderbutton.R;
 
 public class AlloDraggableButton extends RelativeLayout implements View.OnTouchListener {
     private static final String TAG = AlloDraggableButton.class.getSimpleName();
-    private static int THRESHOLD_SNAPPING = 50;
+    private static int THRESHOLD_SNAPPING = 70;
     private Context mContext;
     private FloatingActionButton mFab;
     private float mDeltaY;
@@ -157,24 +157,15 @@ public class AlloDraggableButton extends RelativeLayout implements View.OnTouchL
             });
             Log.d(TAG, "In Zone Top [" + yNew + "]");
         }
-        if (isFabNotInZone) {
+        /*if (isFabNotInZone) {
             mTvGlobal.post(new Runnable() {
                 @Override
                 public void run() {
-                    mTvLocal.setTypeface(null, Typeface.NORMAL);
+                    mTvGlobal.setTypeface(null, Typeface.NORMAL);
                 }
             });
-        }
+        }*/
 
-        // TODO: 1/8/17 RM
-        if (yNew > 50) {
-            mTvGlobal.post(new Runnable() {
-                @Override
-                public void run() {
-                    mTvLocal.setTypeface(null, Typeface.NORMAL);
-                }
-            });
-        }
 
 
         // MIDDLE:
@@ -230,5 +221,9 @@ public class AlloDraggableButton extends RelativeLayout implements View.OnTouchL
     private void restoreInitialX_Y() {
         mFab.setX(mX_initial_position);
         mFab.setY(mY_initial_position);
+    }
+
+    public void setOnTopTextViewListener(ITopTextViewListener iTopTextViewListener){
+
     }
 }

@@ -12,14 +12,27 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.tieorange.allosliderbutton.sample.DraggableActivity">
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/ic_zzz"
-        android:visibility="gone"
-        app:elevation="4dp"
-        />
+    <!-- <android.support.design.widget.FloatingActionButton
+         android:id="@+id/fab"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:src="@drawable/ic_zzz"
+         android:visibility="gone"
+         app:elevation="4dp"
+         />-->
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:layout_alignParentBottom="true"
+        android:background="@color/colorPrimary"/>
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
+        android:layout_centerVertical="true"
+        android:src="@drawable/mapview"/>
+
 
     <com.tieorange.allosliderbutton.draggableFAB.AlloDraggableButton
         android:layout_width="wrap_content"

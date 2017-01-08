@@ -25,7 +25,7 @@
     <item android:id="@android:id/background">
         <shape android:shape="rectangle">
             <corners android:radius="10dp"/>
-            <solid android:color="@color/colorAccentYellow"/>
+            <solid android:color="@color/colorPrimary"/>
         </shape>
     </item>
 
