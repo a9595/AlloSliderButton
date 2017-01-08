@@ -2,7 +2,7 @@ package com.tieorange.allosliderbutton.draggableFAB;
 
 import android.content.Context;
 import android.graphics.Typeface;
-import android.support.design.widget.FloatingActionButton;
+import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -12,7 +12,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.github.clans.fab.FloatingActionMenu;
 import com.tieorange.allosliderbutton.R;
 
 /**
@@ -21,8 +20,8 @@ import com.tieorange.allosliderbutton.R;
 
 public class AlloDraggableButton extends RelativeLayout implements View.OnTouchListener {
     private static final String TAG = AlloDraggableButton.class.getSimpleName();
-    private static Float THRESHOLD_SHOW_HUD = 345f;
-    private static int THRESHOLD_SNAPPING = 70;
+    private static Float THRESHOLD_SHOW_HUD = 345f; // TODO: 1/8/17 Calculate dynamically (10% of mY_initial_position)
+    private static int THRESHOLD_SNAPPING = 90;
     private Context mContext;
     private com.github.clans.fab.FloatingActionButton mFab;
     private float mDeltaY;
@@ -42,6 +41,9 @@ public class AlloDraggableButton extends RelativeLayout implements View.OnTouchL
     private float mMediumLowestPoint;
     private boolean mTvLocalIsBold = false;
     private boolean mIsFabInMiddleZone;
+    private ITextViewSelectedListener mITopTextViewSelectedListener;
+    private ITextViewSelectedListener mIMiddleTextViewSelectedListener;
+    private IFabOnClickListener mIFabOnClickListener;
 
     public AlloDraggableButton(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -74,6 +76,9 @@ public class AlloDraggableButton extends RelativeLayout implements View.OnTouchL
                 if (mY_initial_position == null) {
                     mY_initial_position = mFab.getY();
 
+                    int percentsOfThreshold = 88;
+                    THRESHOLD_SHOW_HUD = (mY_initial_position * percentsOfThreshold) / 100;
+
                     // Highest (Global)
                     mProgressLineTopY = 0f;
                     mTopHighestPoint = mProgressLineTopY - THRESHOLD_SNAPPING;
@@ -94,6 +99,7 @@ public class AlloDraggableButton extends RelativeLayout implements View.OnTouchL
 
     @Override
     public boolean onTouch(View view, MotionEvent event) {
+        Float yNewOfFAB;
         switch (event.getActionMasked()) {
             case MotionEvent.ACTION_DOWN:
                 mDeltaY = view.getY() - event.getRawY();
@@ -102,32 +108,34 @@ public class AlloDraggableButton extends RelativeLayout implements View.OnTouchL
                 break;
 
             case MotionEvent.ACTION_MOVE:
-                Float yNew = event.getRawY() + mDeltaY;
+                yNewOfFAB = event.getRawY() + mDeltaY;
 
-                performMove(view, yNew);
+                performMove(view, yNewOfFAB);
 
-                if (yNew >= THRESHOLD_SHOW_HUD) {
+                if (yNewOfFAB >= THRESHOLD_SHOW_HUD) {
                     changeVisibilityHUD(false);
                 } else {
                     changeVisibilityHUD(true);
                 }
 
-//                makeTextViewsBold(yNew);
-//                makeTextViewsBoldGeneric(yNew, mMediumLowestPoint, mMediumHighestPoint, mTvLocal);
-//                makeTextViewsBoldGeneric(yNew, mTopLowestPoint, mTopHighestPoint, mTvGlobal);
-                makeTextViewsBold(yNew);
+//                makeTextViewsBold(yNewOfFAB);
+//                makeTextViewsBoldGeneric(yNewOfFAB, mMediumLowestPoint, mMediumHighestPoint, mTvLocal);
+//                makeTextViewsBoldGeneric(yNewOfFAB, mTopLowestPoint, mTopHighestPoint, mTvGlobal);
+                makeTextViewsBold(yNewOfFAB);
                 Log.d(TAG, "onTouch() called with:  X=" + view.getX() + "; Y=" + view.getY());
                 break;
 
             case MotionEvent.ACTION_UP:
-                if (mLastAction == MotionEvent.ACTION_DOWN)
-                    Toast.makeText(mContext, "Clicked!", Toast.LENGTH_SHORT).show();
+                yNewOfFAB = event.getRawY() + mDeltaY;
+                if (mLastAction == MotionEvent.ACTION_DOWN) {
+                    if (mIFabOnClickListener != null) mIFabOnClickListener.onClick();
+                }
                 if (mLastAction == MotionEvent.ACTION_MOVE) {
                     Log.d(TAG, "onTouch() called with:  X=" + view.getX() + "; Y=" + view.getY());
                     restoreInitialX_Y();
                     changeVisibilityHUD(false);
+                    checkListeners(yNewOfFAB);
                 }
-
                 break;
 
             default:
@@ -135,6 +143,31 @@ public class AlloDraggableButton extends RelativeLayout implements View.OnTouchL
         }
         return true;
 
+
+    }
+
+    private void checkListeners(Float yNewOfFAB) {
+        boolean fabInZoneMiddle = isFabInZoneMiddle(yNewOfFAB);
+        boolean fabInZoneTop = isFabInZoneTop(yNewOfFAB);
+
+        if (fabInZoneMiddle) {
+            mIMiddleTextViewSelectedListener.selected();
+        } else if (fabInZoneTop) {
+            mITopTextViewSelectedListener.selected();
+        }
+
+
+        /*if (mTvGlobal != null) {
+            boolean isGlobalBold = mTvGlobal.getTypeface().isBold();
+            if (isGlobalBold) {
+                if (mITopTextViewSelectedListener != null) mITopTextViewSelectedListener.selected();
+            }
+        } else if (mTvLocal != null) {
+            boolean isLocalBold = mTvLocal.getTypeface().isBold();
+            if (isLocalBold) {
+                mIMiddleTextViewSelectedListener.selected();
+            }
+        }*/
 
     }
 
@@ -147,9 +180,9 @@ public class AlloDraggableButton extends RelativeLayout implements View.OnTouchL
 
     private void makeTextViewsBold(Float yNew) {
         // TOP:
-        boolean mIsFabInZone = yNew < mTopLowestPoint && yNew > mTopHighestPoint;
+        boolean mIsFabInZoneTop = isFabInZoneTop(yNew);
         boolean isFabNotInZone = yNew > mTopLowestPoint || yNew < mTopHighestPoint;
-        if (mIsFabInZone) {
+        if (mIsFabInZoneTop) {
             mTvGlobal.post(new Runnable() {
                 @Override
                 public void run() {
@@ -159,25 +192,25 @@ public class AlloDraggableButton extends RelativeLayout implements View.OnTouchL
             });
             Log.d(TAG, "In Zone Top [" + yNew + "]");
         }
-        /*if (isFabNotInZone) {
+        if (isFabNotInZone) {
             mTvGlobal.post(new Runnable() {
                 @Override
                 public void run() {
                     mTvGlobal.setTypeface(null, Typeface.NORMAL);
                 }
             });
-        }*/
+        }
 
 
         // MIDDLE:
-        boolean mIsFabInZoneMiddle = yNew < mMediumLowestPoint && yNew > mMediumHighestPoint;
+        boolean mIsFabInZoneMiddle = isFabInZoneMiddle(yNew);
         boolean isFabNotInZoneMiddle = yNew > mMediumLowestPoint || yNew < mMediumHighestPoint;
         if (mIsFabInZoneMiddle) {
             mTvLocal.post(new Runnable() {
                 @Override
                 public void run() {
                     mTvLocal.setTypeface(null, Typeface.BOLD);
-                    mTvGlobal.setTypeface(null, Typeface.NORMAL); // TODO: 1/8/17 RM
+//                    mTvGlobal.setTypeface(mTvGlobal.getTypeface(), Typeface.NORMAL); // TODO: 1/8/17 RM
 
                 }
             });
@@ -193,6 +226,14 @@ public class AlloDraggableButton extends RelativeLayout implements View.OnTouchL
         }
 
 
+    }
+
+    private boolean isFabInZoneMiddle(Float yNew) {
+        return yNew < mMediumLowestPoint && yNew > mMediumHighestPoint;
+    }
+
+    private boolean isFabInZoneTop(Float yNew) {
+        return yNew < mTopLowestPoint && yNew > mTopHighestPoint;
     }
 
     // TODO: 1/8/17 Animate
@@ -224,7 +265,19 @@ public class AlloDraggableButton extends RelativeLayout implements View.OnTouchL
         mFab.setY(mY_initial_position);
     }
 
-    public void setOnTopTextViewListener(ITopTextViewListener iTopTextViewListener) {
+    public void setOnTopTextViewListener(ITextViewSelectedListener iTextViewSelectedListener) {
+        mITopTextViewSelectedListener = iTextViewSelectedListener;
+    }
 
+    public void setOnMiddleTextViewListener(ITextViewSelectedListener iTextViewSelectedListener) {
+        mIMiddleTextViewSelectedListener = iTextViewSelectedListener;
+    }
+
+    public void setOnFabClickListener(IFabOnClickListener iFabOnClickListener) {
+        mIFabOnClickListener = iFabOnClickListener;
+    }
+
+    public void setFabDrawable(Drawable drawable) {
+        mFab.setImageDrawable(drawable);
     }
 }

@@ -1,14 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:tools="http://schemas.android.com/tools"
                 xmlns:fab="http://schemas.android.com/apk/res-auto"
+                xmlns:tools="http://schemas.android.com/tools"
                 android:id="@+id/rootLayoutFabDraggable"
                 android:layout_width="300dp"
                 android:layout_height="250dp"
                 android:theme="@style/Theme.AppCompat"
                 tools:background="@drawable/mapview">
-
-
 
 
     <com.github.clans.fab.FloatingActionButton
@@ -19,10 +17,10 @@
         android:layout_alignParentRight="true"
         android:background="@color/colorAccent"
         android:elevation="4dp"
+        android:src="@drawable/ic_zzz"
         fab:fab_colorNormal="@color/colorAccent"
         fab:fab_colorPressed="@color/colorAccentDark"
-        fab:fab_colorRipple="@color/colorAccentRipple"
-        android:src="@drawable/ic_zzz"/>
+        fab:fab_colorRipple="@color/colorAccentRipple"/>
 
     <View
         android:id="@+id/progressLine"
@@ -44,7 +42,7 @@
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
         android:layout_marginRight="@dimen/marginRightTextViews"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="30dp"
         android:text="@string/global"
         tools:visibility="visible"
         />
@@ -66,7 +64,7 @@
         android:layout_height="wrap_content"
         android:layout_alignLeft="@id/global"
         android:layout_alignParentBottom="true"
-        android:layout_marginBottom="30dp"
+        android:layout_marginBottom="40dp"
         android:text="@string/cancel"
         tools:visibility="visible"/>
 
