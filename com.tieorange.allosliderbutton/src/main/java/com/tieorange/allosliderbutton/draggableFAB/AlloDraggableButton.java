@@ -316,6 +316,7 @@ public class AlloDraggableButton extends RelativeLayout implements View.OnTouchL
         // Animation:
         float durationCoefficient = 1.3f; // the bigger - the longer is duration
         Float duration = (mY_initial_position - yNewOfFAB) / durationCoefficient;
+        if (duration < 50) duration = 50f;
         mFab.animate().y(AlloDraggableButton.mY_initial_position).setDuration(duration.longValue()).setInterpolator(new DecelerateInterpolator()).start();
 
     }
