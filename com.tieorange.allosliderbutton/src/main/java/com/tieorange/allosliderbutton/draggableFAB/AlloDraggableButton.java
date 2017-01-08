@@ -1,6 +1,7 @@
 package com.tieorange.allosliderbutton.draggableFAB;
 
 import android.content.Context;
+import android.graphics.Typeface;
 import android.support.design.widget.FloatingActionButton;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -25,13 +26,16 @@ public class AlloDraggableButton extends RelativeLayout implements View.OnTouchL
     private float mDeltaY;
     private int mLastAction;
     private float mX_initial_position;
-    private float mY_initial_position;
+    private static Float mY_initial_position = null;
     private View mRootView;
     private View mProgressLine;
     private TextView mTvGlobal;
     private TextView mTvLocal;
     private TextView mTvCancel;
     private float mProgressLineMiddleY;
+    private float mMediumHighestPoint;
+    private float mMediumLowestPoint;
+    private boolean mTvLocalIsBold = false;
 
     public AlloDraggableButton(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -61,9 +65,14 @@ public class AlloDraggableButton extends RelativeLayout implements View.OnTouchL
             @Override
             public void onGlobalLayout() {
                 mX_initial_position = mFab.getX();
-                mY_initial_position = mFab.getY();
+                if (mY_initial_position == null) {
+                    mY_initial_position = mFab.getY();
+                }
                 mProgressLineMiddleY = mY_initial_position / 2;
+                mMediumHighestPoint = mProgressLineMiddleY - THRESHOLD_SNAPPING;
+                mMediumLowestPoint = mProgressLineMiddleY + THRESHOLD_SNAPPING;
                 Log.d(TAG, "init() called with:  X=" + mX_initial_position + "; Y=" + mY_initial_position);
+                Log.d(TAG, "init() called with:  mMediumHighestPoint =" + mMediumHighestPoint + ";   mMediumLowestPoint=" + mMediumLowestPoint);
             }
         });
         mFab.setOnTouchListener(this);
@@ -80,14 +89,17 @@ public class AlloDraggableButton extends RelativeLayout implements View.OnTouchL
                 break;
 
             case MotionEvent.ACTION_MOVE:
-                float yNew = event.getRawY() + mDeltaY;
+                Float yNew = event.getRawY() + mDeltaY;
 
                 performMove(view, yNew);
 
-//                changeVisibilityView(mProgressLine, true);
-                changeVisibilityHUD(true);
+                if (yNew >= mY_initial_position) {
+                    changeVisibilityHUD(false);
+                } else {
+                    changeVisibilityHUD(true);
+                }
 
-                changeVisibilityTextViews(yNew);
+                makeTextViewsBold(yNew);
 
                 Log.d(TAG, "onTouch() called with:  X=" + view.getX() + "; Y=" + view.getY());
                 break;
@@ -118,12 +130,28 @@ public class AlloDraggableButton extends RelativeLayout implements View.OnTouchL
         changeVisibilityView(mTvCancel, isVisible);
     }
 
-    private void changeVisibilityTextViews(float yNew) {
+    private void makeTextViewsBold(Float yNew) {
         // Middle:
-        float mediumHighestPoint = mProgressLineMiddleY - THRESHOLD_SNAPPING;
-        float mediumLowestPoint = mProgressLineMiddleY + THRESHOLD_SNAPPING;
-        if (yNew < mediumLowestPoint && yNew > mediumHighestPoint) {
+        boolean isFabInMiddle = yNew < mMediumLowestPoint && yNew > mMediumHighestPoint;
+        if (isFabInMiddle && !mTvLocalIsBold) {
+            mTvLocal.post(new Runnable() {
+                @Override
+                public void run() {
+                    mTvLocal.setTypeface(null, Typeface.BOLD);
+                    mTvLocalIsBold = true;
+                }
+            });
+
             Log.d(TAG, "MIDDLE [" + yNew + "]");
+        } else if (!isFabInMiddle && mTvLocalIsBold) {
+            Log.d(TAG, "NOT MIDDLE [" + yNew + "]");
+            mTvLocal.post(new Runnable() {
+                @Override
+                public void run() {
+                    mTvLocal.setTypeface(null, Typeface.NORMAL);
+                    mTvLocalIsBold = false;
+                }
+            });
         }
     }
 
@@ -136,17 +164,16 @@ public class AlloDraggableButton extends RelativeLayout implements View.OnTouchL
             visibility = View.GONE;
         }
 
-        mProgressLine.setVisibility(visibility);
+        view.setVisibility(visibility);
     }
 
-    private void performMove(View view, float yNew) {
+    private void performMove(View view, Float yNew) {
         if (yNew < 0) {
-            view.setY(0);
+            yNew = 0f;
         } else if (yNew > mY_initial_position) {
-            view.setY(mY_initial_position);
-        } else {
-            view.setY(yNew);
+            yNew = mY_initial_position;
         }
+        view.setY(yNew);
         mLastAction = MotionEvent.ACTION_MOVE;
     }
 
