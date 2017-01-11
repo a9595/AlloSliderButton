@@ -16,8 +16,11 @@ import android.view.animation.DecelerateInterpolator;
 import android.view.animation.TranslateAnimation;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.tieorange.allosliderbutton.R;
+
+import org.w3c.dom.Text;
 
 /**
  * Created by root on 1/7/17.
@@ -28,9 +31,12 @@ public class AlloDraggableButton extends RelativeLayout implements View.OnTouchL
     private static Float THRESHOLD_SHOW_HUD;
     private static final int PERCENTS_OF_THRESHOLD = 88; // how many percents should view go to show HUD (global, local)
     private static int THRESHOLD_SNAPPING = 90;
+
     private Context mContext;
     private com.github.clans.fab.FloatingActionButton mFab;
     private float mDeltaY;
+    private float mDeltaX;
+
     private int mLastAction;
     private float mX_initial_position;
     private static Float mY_initial_position = null;
@@ -39,6 +45,8 @@ public class AlloDraggableButton extends RelativeLayout implements View.OnTouchL
     private TextView mTvGlobal;
     private TextView mTvLocal;
     private TextView mTvCancel;
+    private TextView mTvFriends;
+
     private Float mProgressLineTopY;
     private float mTopHighestPoint;
     private float mTopLowestPoint;
@@ -47,10 +55,12 @@ public class AlloDraggableButton extends RelativeLayout implements View.OnTouchL
     private float mMediumLowestPoint;
     private boolean mTvLocalIsBold = false;
     private boolean mIsFabInMiddleZone;
+
     private ITextViewSelectedListener mITopTextViewSelectedListener;
     private ITextViewSelectedListener mIMiddleTextViewSelectedListener;
     private IFabOnClickListener mIFabOnClickListener;
     private IPercentsSliderListener mIPercentsSliderListener;
+
     private Animation mAnimationFadeIn;
     private Animation mAnimationFadeOut;
     private boolean mIsVisibleHUD;
@@ -74,9 +84,11 @@ public class AlloDraggableButton extends RelativeLayout implements View.OnTouchL
         mTvGlobal = (TextView) findViewById(R.id.global);
         mTvLocal = (TextView) findViewById(R.id.local);
         mTvCancel = (TextView) findViewById(R.id.cancel);
+        mTvFriends = (TextView) findViewById(R.id.friends);
 
         initFAB();
         initAnimations();
+
     }
 
     private void initAnimations() {
@@ -107,7 +119,16 @@ public class AlloDraggableButton extends RelativeLayout implements View.OnTouchL
                     mMediumLowestPoint = mProgressLineMiddleY + THRESHOLD_SNAPPING;
                     Log.d(TAG, "OnGlobalLayoutListener() called with:  X=" + mX_initial_position + "; Y=" + mY_initial_position);
                     Log.d(TAG, "OnGlobalLayoutListener() called with:  mMediumHighestPoint =" + mMediumHighestPoint + ";   mMediumLowestPoint=" + mMediumLowestPoint);
+
+//                    mFab.setY(mY_initial_position / 2);
                 }
+            }
+        });
+
+        mFab.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(mContext, "Clicked", Toast.LENGTH_SHORT).show();
             }
         });
         mFab.setOnTouchListener(this);
@@ -120,6 +141,7 @@ public class AlloDraggableButton extends RelativeLayout implements View.OnTouchL
         switch (event.getActionMasked()) {
             case MotionEvent.ACTION_DOWN:
                 mDeltaY = view.getY() - event.getRawY();
+                mDeltaX = view.getX() - event.getRawX();
                 mLastAction = MotionEvent.ACTION_DOWN;
 
                 break;
@@ -203,6 +225,7 @@ public class AlloDraggableButton extends RelativeLayout implements View.OnTouchL
         changeVisibilityView(mTvGlobal, isVisible);
         changeVisibilityView(mTvLocal, isVisible);
         changeVisibilityView(mTvCancel, isVisible);
+        changeVisibilityView(mTvFriends, isVisible);
         mIsVisibleHUD = isVisible;
     }
 
@@ -339,5 +362,19 @@ public class AlloDraggableButton extends RelativeLayout implements View.OnTouchL
 
     public void setFabDrawable(Drawable drawable) {
         mFab.setImageDrawable(drawable);
+    }
+
+    /**
+     * Make a button not slidable
+     */
+    public void hideSlider() {
+        mFab.setOnTouchListener(null);
+    }
+
+    /**
+     * Make a button slidable and show a slider
+     */
+    public void showSlider() {
+        mFab.setOnTouchListener(this);
     }
 }
