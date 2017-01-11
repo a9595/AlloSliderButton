@@ -1,6 +1,5 @@
 package com.tieorange.allosliderbutton.draggableFAB;
 
-import android.animation.Animator;
 import android.content.Context;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
@@ -9,18 +8,13 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewTreeObserver;
-import android.view.animation.AccelerateDecelerateInterpolator;
-import android.view.animation.AccelerateInterpolator;
 import android.view.animation.Animation;
 import android.view.animation.DecelerateInterpolator;
-import android.view.animation.TranslateAnimation;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.tieorange.allosliderbutton.R;
-
-import org.w3c.dom.Text;
 
 /**
  * Created by root on 1/7/17.
@@ -29,7 +23,7 @@ import org.w3c.dom.Text;
 public class AlloDraggableButton extends RelativeLayout implements View.OnTouchListener {
     private static final String TAG = AlloDraggableButton.class.getSimpleName();
     private static Float THRESHOLD_SHOW_HUD;
-    private static final int PERCENTS_OF_THRESHOLD = 88; // how many percents should view go to show HUD (global, local)
+    private static final int PERCENTS_OF_THRESHOLD = 100; // how many percents should view go to show HUD (global, local)
     private static int THRESHOLD_SNAPPING = 90;
 
     private Context mContext;
@@ -138,6 +132,7 @@ public class AlloDraggableButton extends RelativeLayout implements View.OnTouchL
     @Override
     public boolean onTouch(View view, MotionEvent event) {
         Float yNewOfFAB;
+        Float xNewOfFAB;
         switch (event.getActionMasked()) {
             case MotionEvent.ACTION_DOWN:
                 mDeltaY = view.getY() - event.getRawY();
@@ -148,6 +143,7 @@ public class AlloDraggableButton extends RelativeLayout implements View.OnTouchL
 
             case MotionEvent.ACTION_MOVE:
                 yNewOfFAB = event.getRawY() + mDeltaY;
+                xNewOfFAB = event.getRawX() + mDeltaX;
 
                 performMove(view, yNewOfFAB);
 
@@ -157,8 +153,11 @@ public class AlloDraggableButton extends RelativeLayout implements View.OnTouchL
                     changeVisibilityHUD(true);
                 }
 
+                checkFriendsMakeBold(xNewOfFAB);
+
                 makeTextViewsBold(yNewOfFAB);
-                Log.d(TAG, "onTouch() called with:  X=" + view.getX() + "; Y=" + view.getY());
+//                Log.d(TAG, "onTouch() MOVE called with:  X=" + view.getX() + "; Y=" + view.getY());
+                Log.d(TAG, "onTouch() MOVE called with:  X=" + xNewOfFAB + "; Y=" + yNewOfFAB);
                 break;
 
             case MotionEvent.ACTION_UP:
@@ -180,6 +179,14 @@ public class AlloDraggableButton extends RelativeLayout implements View.OnTouchL
         return true;
 
 
+    }
+
+    private void checkFriendsMakeBold(Float xNewOfFAB) {
+        if (xNewOfFAB >= mX_initial_position) { // friends
+            mTvFriends.setTypeface(null, Typeface.BOLD);
+        } else { // local
+            mTvFriends.setTypeface(null, Typeface.NORMAL);
+        }
     }
 
     private void checkListeners(Float yNewOfFAB) {
