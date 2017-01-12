@@ -53,6 +53,13 @@ public class DraggableActivity extends AppCompatActivity {
             }
         });
 
+        mAlloButton.setOnRightTextViewListener(new ITextViewSelectedListener() {
+            @Override
+            public void selected() {
+                Toast.makeText(DraggableActivity.this, "Friends", Toast.LENGTH_SHORT).show();
+            }
+        });
+
 //        Drawable fabDrawable = ContextCompat.getDrawable(this, R.drawable.fab_add);
 //        mAlloButton.setFabDrawable(fabDrawable);
     }

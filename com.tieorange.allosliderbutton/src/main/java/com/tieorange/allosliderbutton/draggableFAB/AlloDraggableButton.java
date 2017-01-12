@@ -54,6 +54,7 @@ public class AlloDraggableButton extends RelativeLayout implements View.OnTouchL
 
     private ITextViewSelectedListener mITopTextViewSelectedListener;
     private ITextViewSelectedListener mIMiddleTextViewSelectedListener;
+    private ITextViewSelectedListener mIRightTextViewSelected;
     private IFabOnClickListener mIFabOnClickListener;
     private IPercentsSliderListener mIPercentsSliderListener;
 
@@ -166,13 +167,14 @@ public class AlloDraggableButton extends RelativeLayout implements View.OnTouchL
 
             case MotionEvent.ACTION_UP:
                 yNewOfFAB = event.getRawY() + mDeltaY;
+                xNewOfFAB = event.getRawX() + mDeltaX;
                 if (mLastAction == MotionEvent.ACTION_DOWN) {
                     view.performClick();
                     if (mIFabOnClickListener != null) mIFabOnClickListener.onClick();
                 }
                 if (mLastAction == MotionEvent.ACTION_MOVE) {
                     Log.d(TAG, "onTouch() called with:  X=" + view.getX() + "; Y=" + view.getY());
-                    checkListeners(yNewOfFAB);
+                    checkListeners(yNewOfFAB, xNewOfFAB);
                     restoreInitialX_Y(yNewOfFAB);
                     changeVisibilityHUD(false);
                 }
@@ -198,16 +200,25 @@ public class AlloDraggableButton extends RelativeLayout implements View.OnTouchL
         return xNewOfFAB >= mX_initial_position;
     }
 
-    private void checkListeners(Float yNewOfFAB) {
+    private void checkListeners(Float yNewOfFAB, Float xNewOfFab) {
         boolean fabInZoneMiddle = isFabInZoneMiddle(yNewOfFAB);
         boolean fabInZoneTop = isFabInZoneTop(yNewOfFAB);
+        boolean fingerOnTheRightSide = isFingerOnTheRightSide(xNewOfFab);
 
-        if (fabInZoneMiddle && mIMiddleTextViewSelectedListener != null) {
-            mIMiddleTextViewSelectedListener.selected();
+        if (fingerOnTheRightSide) {
+            if (mIRightTextViewSelected != null) {
+                mIRightTextViewSelected.selected();
+            }
 
-        } else if (fabInZoneTop && mITopTextViewSelectedListener != null) {
-            mITopTextViewSelectedListener.selected();
+        } else {
+            if (fabInZoneMiddle && mIMiddleTextViewSelectedListener != null) {
+                mIMiddleTextViewSelectedListener.selected();
+
+            } else if (fabInZoneTop && mITopTextViewSelectedListener != null) {
+                mITopTextViewSelectedListener.selected();
+            }
         }
+
 
         // Y_init = 400; Y_new = 200; X = 50%;
         // Calculate the percentage of slider before finger release
@@ -319,7 +330,6 @@ public class AlloDraggableButton extends RelativeLayout implements View.OnTouchL
         return yNew < mTopLowestPoint && yNew > mTopHighestPoint;
     }
 
-    // TODO: 1/8/17 Animate
     private void changeVisibilityView(final View view, boolean isVisible) {
         if (view == null) return;
 
@@ -363,7 +373,6 @@ public class AlloDraggableButton extends RelativeLayout implements View.OnTouchL
     }
 
 
-    // TODO: 1/8/17 Animate
     private void restoreInitialX_Y(Float yNewOfFAB) {
         mFab.setX(mX_initial_position);
 //        mFab.setY(mY_initial_position);
@@ -374,6 +383,10 @@ public class AlloDraggableButton extends RelativeLayout implements View.OnTouchL
         if (duration < 50) duration = 50f;
         mFab.animate().y(AlloDraggableButton.mY_initial_position).setDuration(duration.longValue()).setInterpolator(new DecelerateInterpolator()).start();
 
+    }
+
+    public void setOnRightTextViewListener(ITextViewSelectedListener iTextViewSelectedListener) {
+        mIRightTextViewSelected = iTextViewSelectedListener;
     }
 
     public void setOnTopTextViewListener(ITextViewSelectedListener iTextViewSelectedListener) {

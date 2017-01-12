@@ -79,7 +79,6 @@
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
         android:text="@string/friends"
-        android:visibility="visible"
         tools:visibility="visible"/>
 
 
