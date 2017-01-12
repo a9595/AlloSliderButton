@@ -22,6 +22,8 @@ import com.tieorange.allosliderbutton.R;
 
 public class AlloDraggableButton extends RelativeLayout implements View.OnTouchListener {
     private static final String TAG = AlloDraggableButton.class.getSimpleName();
+    private static final float MAX_X_MOVE_ON_CLICK = 30f;
+    private static final float MAX_Y_MOVE_ON_CLICK = 30f;
     private static Float THRESHOLD_SHOW_HUD;
     private static final int PERCENTS_OF_THRESHOLD = 100; // how many percents should view go to show HUD (global, local)
     private static int THRESHOLD_SNAPPING = 90;
@@ -135,10 +137,13 @@ public class AlloDraggableButton extends RelativeLayout implements View.OnTouchL
         Float xNewOfFAB;
         switch (event.getActionMasked()) {
             case MotionEvent.ACTION_DOWN:
-                mDeltaY = view.getY() - event.getRawY();
-                mDeltaX = view.getX() - event.getRawX();
-                mLastAction = MotionEvent.ACTION_DOWN;
-
+                if (Math.abs(event.getX()) < MAX_X_MOVE_ON_CLICK || Math.abs(event.getY()) < MAX_Y_MOVE_ON_CLICK) {
+                    view.performClick();
+                } else {
+                    mDeltaY = view.getY() - event.getRawY();
+                    mDeltaX = view.getX() - event.getRawX();
+                    mLastAction = MotionEvent.ACTION_DOWN;
+                }
                 break;
 
             case MotionEvent.ACTION_MOVE:
@@ -154,8 +159,7 @@ public class AlloDraggableButton extends RelativeLayout implements View.OnTouchL
                 }
 
                 checkFriendsMakeBold(xNewOfFAB);
-
-                makeTextViewsBold(yNewOfFAB);
+                makeTextViewsBold(yNewOfFAB, xNewOfFAB);
 //                Log.d(TAG, "onTouch() MOVE called with:  X=" + view.getX() + "; Y=" + view.getY());
                 Log.d(TAG, "onTouch() MOVE called with:  X=" + xNewOfFAB + "; Y=" + yNewOfFAB);
                 break;
@@ -163,6 +167,7 @@ public class AlloDraggableButton extends RelativeLayout implements View.OnTouchL
             case MotionEvent.ACTION_UP:
                 yNewOfFAB = event.getRawY() + mDeltaY;
                 if (mLastAction == MotionEvent.ACTION_DOWN) {
+                    view.performClick();
                     if (mIFabOnClickListener != null) mIFabOnClickListener.onClick();
                 }
                 if (mLastAction == MotionEvent.ACTION_MOVE) {
@@ -182,11 +187,15 @@ public class AlloDraggableButton extends RelativeLayout implements View.OnTouchL
     }
 
     private void checkFriendsMakeBold(Float xNewOfFAB) {
-        if (xNewOfFAB >= mX_initial_position) { // friends
+        if (isFingerOnTheRightSide(xNewOfFAB)) { // friends
             mTvFriends.setTypeface(null, Typeface.BOLD);
         } else { // local
             mTvFriends.setTypeface(null, Typeface.NORMAL);
         }
+    }
+
+    private boolean isFingerOnTheRightSide(Float xNewOfFAB) {
+        return xNewOfFAB >= mX_initial_position;
     }
 
     private void checkListeners(Float yNewOfFAB) {
@@ -236,7 +245,23 @@ public class AlloDraggableButton extends RelativeLayout implements View.OnTouchL
         mIsVisibleHUD = isVisible;
     }
 
-    private void makeTextViewsBold(Float yNew) {
+    private void makeTextViewsBold(Float yNew, Float xNewOfFAB) {
+        if (isFingerOnTheRightSide(xNewOfFAB)) {
+            mTvGlobal.post(new Runnable() {
+                @Override
+                public void run() {
+                    mTvGlobal.setTypeface(null, Typeface.NORMAL);
+                }
+            });
+            mTvLocal.post(new Runnable() {
+                @Override
+                public void run() {
+                    mTvLocal.setTypeface(null, Typeface.NORMAL);
+                }
+            });
+            return;
+        }
+
         // TOP:
         boolean mIsFabInZoneTop = isFabInZoneTop(yNew);
         boolean isFabNotInZone = yNew > mTopLowestPoint || yNew < mTopHighestPoint;

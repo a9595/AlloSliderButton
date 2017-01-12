@@ -53,8 +53,8 @@ public class DraggableActivity extends AppCompatActivity {
             }
         });
 
-        Drawable fabDrawable = ContextCompat.getDrawable(this, R.drawable.fab_add);
-        mAlloButton.setFabDrawable(fabDrawable);
+//        Drawable fabDrawable = ContextCompat.getDrawable(this, R.drawable.fab_add);
+//        mAlloButton.setFabDrawable(fabDrawable);
     }
 
 
