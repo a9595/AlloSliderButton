@@ -10,6 +10,7 @@ import com.tieorange.allosliderbutton.draggableFAB.AlloDraggableButton;
 import com.tieorange.allosliderbutton.draggableFAB.IFabOnClickListener;
 import com.tieorange.allosliderbutton.draggableFAB.IPercentsSliderListener;
 import com.tieorange.allosliderbutton.draggableFAB.ITextViewSelectedListener;
+import com.tieorange.allosliderbutton.draggableFAB.ITutorialFinishedListener;
 
 public class DraggableActivity extends AppCompatActivity {
     private AlloDraggableButton mAlloButton;
@@ -32,12 +33,10 @@ public class DraggableActivity extends AppCompatActivity {
                 recreate();
             }
         };
-
-        mAlloButton.setOnTopTextViewListener(new ITextViewSelectedListener() {
+        mAlloButton.setOnTutorialFinishedListener(new ITutorialFinishedListener() {
             @Override
-            public void selected() {
+            public void finished() {
                 mAlloButton.postDelayed(runnableRecreateView, 500);
-//                mAlloButton.initTutorial();
             }
         });
 

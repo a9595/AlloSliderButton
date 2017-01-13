@@ -1,15 +1,12 @@
 package com.tieorange.allosliderbutton.draggableFAB;
 
 import android.animation.Animator;
-import android.animation.PropertyValuesHolder;
-import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.RippleDrawable;
 import android.os.Build;
 import android.os.Handler;
-import android.support.annotation.RequiresApi;
 import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -73,6 +70,8 @@ public class AlloDraggableButton extends RelativeLayout implements View.OnTouchL
     private Animation mAnimationFadeOut;
     private boolean mIsVisibleHUD;
     private boolean mIsTutorialEnabled = false;
+    private int mSliderToCancelCount = 0; // 1 - global ; 2 - local; 3 - friends;
+    private ITutorialFinishedListener mITutorialFinishedListener;
 
     public AlloDraggableButton(Context context) {
         super(context);
@@ -417,9 +416,8 @@ public class AlloDraggableButton extends RelativeLayout implements View.OnTouchL
             @Override
             public void run() {
                 tutorialSlideToGlobal();
-                makeRippleForTutorial();
             }
-        }, 1000);
+        }, 500);
     }
 
     // Button will be swiped to the Top textView and come back (for tutorial)
@@ -433,7 +431,7 @@ public class AlloDraggableButton extends RelativeLayout implements View.OnTouchL
 
             @Override
             public void onAnimationEnd(Animator animation) {
-                tutorialSlideToCancel(false);
+                tutorialSlideToCancel();
             }
 
             @Override
@@ -461,23 +459,27 @@ public class AlloDraggableButton extends RelativeLayout implements View.OnTouchL
         }, textBoldDelay);
     }
 
-    private void tutorialSlideToCancel(final boolean isPlayingLastTime) {
+    private void tutorialSlideToCancel() {
+        mSliderToCancelCount++; // 1 - global ; 2 - local; 3 - friends;
 //        makeRippleForTutorial();
 
         int startDelay = 500;
         Animator.AnimatorListener listener = new Animator.AnimatorListener() {
             @Override
             public void onAnimationStart(Animator animation) {
-                forceRippleAnimation(mRootView, !isPlayingLastTime);
+                forceRippleAnimation(mRootView);
             }
 
             @Override
             public void onAnimationEnd(Animator animation) {
-                if (isPlayingLastTime) {
-                    mITopTextViewSelectedListener.selected(); // TODO: 1/13/17 create c
-                    //                    tutorialSlideToGlobal();
-                } else {
+
+                if (mSliderToCancelCount >= 3) {
+                    mITutorialFinishedListener.finished(); // TODO: 1/13/17 create listener
+                } else if (mSliderToCancelCount == 2) {
+                    tutorialSlideToFriends();
+                } else if (mSliderToCancelCount == 1) {
                     tutorialSlideToLocal();
+
                 }
             }
 
@@ -492,7 +494,7 @@ public class AlloDraggableButton extends RelativeLayout implements View.OnTouchL
             }
         };
         int durationFAB = 1500;
-        if (isPlayingLastTime) durationFAB = durationFAB / 2;
+        if (mSliderToCancelCount == 2 || mSliderToCancelCount == 3) durationFAB = durationFAB / 2;
 
         ViewPropertyAnimator animator = mFab.animate().y(mY_initial_position).setDuration(durationFAB).setInterpolator(new DecelerateInterpolator()).setListener(listener);
         animator.setStartDelay(startDelay);
@@ -513,6 +515,19 @@ public class AlloDraggableButton extends RelativeLayout implements View.OnTouchL
     }
 
     private void tutorialSlideToLocal() {
+        tutorialSlideToMiddle(true);
+    }
+
+    private void tutorialSlideToFriends() {
+        tutorialSlideToMiddle(false);
+    }
+
+    /**
+     * animates sliding of FAB to the middle point.
+     *
+     * @param isLeftSide true - left side animated. false - right side
+     */
+    private void tutorialSlideToMiddle(final boolean isLeftSide) {
         int startDelay = 2000;
         Animator.AnimatorListener listener = new Animator.AnimatorListener() {
             @Override
@@ -522,7 +537,7 @@ public class AlloDraggableButton extends RelativeLayout implements View.OnTouchL
 
             @Override
             public void onAnimationEnd(Animator animation) {
-                tutorialSlideToCancel(true);
+                tutorialSlideToCancel();
             }
 
             @Override
@@ -542,15 +557,19 @@ public class AlloDraggableButton extends RelativeLayout implements View.OnTouchL
         changeVisibilityHUD(true, startDelay);
 
         int boldTextDelay = (durationFAB / 2) + startDelay;
-        mTvLocal.postDelayed(new Runnable() {
+
+
+        final TextView textView = isLeftSide ? mTvLocal : mTvFriends;
+
+        textView.postDelayed(new Runnable() {
             @Override
             public void run() {
-                mTvLocal.setTypeface(null, Typeface.BOLD);
+                textView.setTypeface(null, Typeface.BOLD);
             }
         }, boldTextDelay);
     }
 
-    protected void forceRippleAnimation(View view, boolean isRippleHotspotOnTop) {
+    protected void forceRippleAnimation(View view) {
         final RippleDrawable rippleDrawable = (RippleDrawable) ContextCompat.getDrawable(getContext(), R.drawable.ripple_effect);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -570,36 +589,8 @@ public class AlloDraggableButton extends RelativeLayout implements View.OnTouchL
                 public void run() {
                     rippleDrawable.setState(new int[]{});
                 }
-            }, 50);
+            }, 0);
         }
-    }
-
-    private void makeRippleForTutorial() {
-        mRootLayout.performClick();
-        final Runnable pressRunnable;
-        Runnable unpressRunnable = null;
-
-        final Runnable finalUnpressRunnable = unpressRunnable;
-        pressRunnable = new Runnable() {
-            @Override
-            public void run() {
-                mRootLayout.setPressed(true);
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                    mRootLayout.postOnAnimationDelayed(finalUnpressRunnable, 500);
-                }
-            }
-        };
-
-        unpressRunnable = new Runnable() {
-            @Override
-            public void run() {
-                mRootView.setPressed(false);
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                    mRootView.postOnAnimationDelayed(pressRunnable, 500);
-                }
-            }
-        };
-
     }
     //endregion
 
@@ -621,6 +612,10 @@ public class AlloDraggableButton extends RelativeLayout implements View.OnTouchL
 
     public void setOnFabClickListener(IFabOnClickListener iFabOnClickListener) {
         mIFabOnClickListener = iFabOnClickListener;
+    }
+
+    public void setOnTutorialFinishedListener(ITutorialFinishedListener listener) {
+        mITutorialFinishedListener = listener;
     }
 
     public void setFabDrawable(Drawable drawable) {
