@@ -21,7 +21,7 @@ public class DraggableActivity extends AppCompatActivity {
         mAlloButton = (AlloDraggableButton) findViewById(R.id.alloButton);
 
         initFAB();
-//        mAlloButton.hideSlider();
+//        mAlloButton.slideToGlobalWithAnimation();
     }
 
     private void initFAB() {

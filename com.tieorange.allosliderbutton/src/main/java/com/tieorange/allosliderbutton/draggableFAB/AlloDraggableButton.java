@@ -1,5 +1,6 @@
 package com.tieorange.allosliderbutton.draggableFAB;
 
+import android.animation.Animator;
 import android.content.Context;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
@@ -126,6 +127,7 @@ public class AlloDraggableButton extends RelativeLayout implements View.OnTouchL
             @Override
             public void onClick(View v) {
                 Toast.makeText(mContext, "Clicked", Toast.LENGTH_SHORT).show();
+                slideToGlobalWithAnimation(); // TODO: 1/13/17 RM
             }
         });
         mFab.setOnTouchListener(this);
@@ -383,6 +385,15 @@ public class AlloDraggableButton extends RelativeLayout implements View.OnTouchL
         if (duration < 50) duration = 50f;
         mFab.animate().y(AlloDraggableButton.mY_initial_position).setDuration(duration.longValue()).setInterpolator(new DecelerateInterpolator()).start();
 
+    }
+
+    // Button will be swiped to the Top textView and come back (for tutorial)
+    public void slideToGlobalWithAnimation() {
+        // FAB:
+        mFab.animate().y(0).setDuration(1500).setInterpolator(new DecelerateInterpolator()).start();
+
+        // HUD:
+        changeVisibilityHUD(true);
     }
 
     public void setOnRightTextViewListener(ITextViewSelectedListener iTextViewSelectedListener) {
