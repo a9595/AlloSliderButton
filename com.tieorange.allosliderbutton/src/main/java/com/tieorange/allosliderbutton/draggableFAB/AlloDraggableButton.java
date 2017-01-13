@@ -555,19 +555,11 @@ public class AlloDraggableButton extends RelativeLayout implements View.OnTouchL
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             view.setBackground(rippleDrawable);
-            /*if (isRippleHotspotOnTop) {
-                rippleDrawable.setHotspot(mX_initial_position, 0);
-            } else {
-                rippleDrawable.setHotspot(mX_initial_position, mY_initial_position / 2);
-            }*/
-
-            rippleDrawable.setHotspot(mFab.getX(), mFab.getY());
+            rippleDrawable.setHotspot(mX_initial_position, mFab.getY());
         }
 
-//        Drawable background = view.getBackground();
 
         if (Build.VERSION.SDK_INT >= 22) {
-//            final RippleDrawable rippleDrawable = (RippleDrawable) background;
 
             rippleDrawable.setState(new int[]{android.R.attr.state_pressed, android.R.attr.state_enabled});
 
