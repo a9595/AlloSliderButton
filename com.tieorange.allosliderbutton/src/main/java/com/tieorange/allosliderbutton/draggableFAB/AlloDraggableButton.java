@@ -1,9 +1,13 @@
 package com.tieorange.allosliderbutton.draggableFAB;
 
 import android.animation.Animator;
+import android.animation.PropertyValuesHolder;
+import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
+import android.support.annotation.RequiresApi;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -36,7 +40,7 @@ public class AlloDraggableButton extends RelativeLayout implements View.OnTouchL
     private float mDeltaX;
 
     private int mLastAction;
-    private float mX_initial_position;
+    private static Float mX_initial_position = null;
     private static Float mY_initial_position = null;
     private View mRootView;
     private View mProgressLine;
@@ -63,6 +67,7 @@ public class AlloDraggableButton extends RelativeLayout implements View.OnTouchL
     private Animation mAnimationFadeIn;
     private Animation mAnimationFadeOut;
     private boolean mIsVisibleHUD;
+    private boolean mIsTutorialEnabled = false;
 
     public AlloDraggableButton(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -101,8 +106,9 @@ public class AlloDraggableButton extends RelativeLayout implements View.OnTouchL
         mFab.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
-                mX_initial_position = mFab.getX();
+                Log.d(TAG, "onGlobalLayout() called");
                 if (mY_initial_position == null) {
+                    mX_initial_position = mFab.getX();
                     mY_initial_position = mFab.getY();
 
                     THRESHOLD_SHOW_HUD = (mY_initial_position * PERCENTS_OF_THRESHOLD) / 100;
@@ -118,9 +124,10 @@ public class AlloDraggableButton extends RelativeLayout implements View.OnTouchL
                     mMediumLowestPoint = mProgressLineMiddleY + THRESHOLD_SNAPPING;
                     Log.d(TAG, "OnGlobalLayoutListener() called with:  X=" + mX_initial_position + "; Y=" + mY_initial_position);
                     Log.d(TAG, "OnGlobalLayoutListener() called with:  mMediumHighestPoint =" + mMediumHighestPoint + ";   mMediumLowestPoint=" + mMediumLowestPoint);
-
 //                    mFab.setY(mY_initial_position / 2);
                 }
+
+
             }
         });
 
@@ -389,6 +396,14 @@ public class AlloDraggableButton extends RelativeLayout implements View.OnTouchL
     }
 
     //region Tutorial
+    public void initTutorial() {
+        mIsTutorialEnabled = true;
+
+        mFab.setOnTouchListener(null);
+        mFab.setClickable(false);
+        tutorialSlideToGlobal();
+    }
+
     // Button will be swiped to the Top textView and come back (for tutorial)
     public void tutorialSlideToGlobal() {
         // FAB:
@@ -400,7 +415,7 @@ public class AlloDraggableButton extends RelativeLayout implements View.OnTouchL
 
             @Override
             public void onAnimationEnd(Animator animation) {
-                tutorialSlideToCancel();
+                tutorialSlideToCancel(false);
             }
 
             @Override
@@ -419,15 +434,16 @@ public class AlloDraggableButton extends RelativeLayout implements View.OnTouchL
         // HUD:
         changeVisibilityHUD(true, 0);
 
+        long textBoldDelay = duration - (duration / 3);
         mTvGlobal.postDelayed(new Runnable() {
             @Override
             public void run() {
                 mTvGlobal.setTypeface(null, Typeface.BOLD);
             }
-        }, duration - 700);
+        }, textBoldDelay);
     }
 
-    private void tutorialSlideToCancel() {
+    private void tutorialSlideToCancel(final boolean isPlayingLastTime) {
         int startDelay = 2000;
         Animator.AnimatorListener listener = new Animator.AnimatorListener() {
             @Override
@@ -437,6 +453,7 @@ public class AlloDraggableButton extends RelativeLayout implements View.OnTouchL
 
             @Override
             public void onAnimationEnd(Animator animation) {
+                if (isPlayingLastTime) return;
                 tutorialSlideToLocal();
             }
 
@@ -454,14 +471,17 @@ public class AlloDraggableButton extends RelativeLayout implements View.OnTouchL
         ViewPropertyAnimator animator = mFab.animate().y(mY_initial_position).setDuration(durationFAB).setInterpolator(new DecelerateInterpolator()).setListener(listener);
         animator.setStartDelay(startDelay);
         animator.start();
-        changeVisibilityHUD(false, startDelay + durationFAB);
+        int HUDanimationOffset = startDelay + (durationFAB - (durationFAB / 4));
+        changeVisibilityHUD(false, HUDanimationOffset);
 
+        int textBoldDelay = (durationFAB / 4) + startDelay;
         mTvGlobal.postDelayed(new Runnable() {
             @Override
             public void run() {
                 mTvGlobal.setTypeface(null, Typeface.NORMAL);
+                mTvLocal.setTypeface(null, Typeface.NORMAL);
             }
-        }, 500 + startDelay);
+        }, textBoldDelay);
     }
 
     private void tutorialSlideToLocal() {
@@ -474,7 +494,7 @@ public class AlloDraggableButton extends RelativeLayout implements View.OnTouchL
 
             @Override
             public void onAnimationEnd(Animator animation) {
-                tutorialSlideToCancel();
+                tutorialSlideToCancel(true);
             }
 
             @Override
@@ -493,12 +513,12 @@ public class AlloDraggableButton extends RelativeLayout implements View.OnTouchL
         animator.start();
         changeVisibilityHUD(true, startDelay + durationFAB);
 
-        mTvLocal.postDelayed(new Runnable() {
+        /*mTvLocal.postDelayed(new Runnable() {
             @Override
             public void run() {
                 mTvLocal.setTypeface(null, Typeface.BOLD);
             }
-        }, 500 + startDelay);
+        }, 500 + startDelay);*/
     }
     //endregion
 

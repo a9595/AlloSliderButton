@@ -20,7 +20,7 @@ public class DraggableActivity extends AppCompatActivity {
         setContentView(R.layout.activity_draggable);
         mAlloButton = (AlloDraggableButton) findViewById(R.id.alloButton);
 
-        initFAB();
+//        initFAB();
 //        mAlloButton.tutorialSlideToGlobal();
     }
 
