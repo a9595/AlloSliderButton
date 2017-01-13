@@ -16,7 +16,10 @@ import android.view.ViewPropertyAnimator;
 import android.view.ViewTreeObserver;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.Animation;
+import android.view.animation.AnticipateOvershootInterpolator;
+import android.view.animation.BounceInterpolator;
 import android.view.animation.DecelerateInterpolator;
+import android.view.animation.Interpolator;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -496,7 +499,8 @@ public class AlloDraggableButton extends RelativeLayout implements View.OnTouchL
         int durationFAB = 1500;
         if (mSliderToCancelCount == 2 || mSliderToCancelCount == 3) durationFAB = durationFAB / 2;
 
-        ViewPropertyAnimator animator = mFab.animate().y(mY_initial_position).setDuration(durationFAB).setInterpolator(new DecelerateInterpolator()).setListener(listener);
+        Interpolator interpolator = new DecelerateInterpolator();
+        ViewPropertyAnimator animator = mFab.animate().y(mY_initial_position).setDuration(durationFAB).setInterpolator(interpolator).setListener(listener);
         animator.setStartDelay(startDelay);
         animator.start();
         int HUDanimationOffset = startDelay + (durationFAB - (durationFAB / 4));
@@ -551,7 +555,7 @@ public class AlloDraggableButton extends RelativeLayout implements View.OnTouchL
             }
         };
         int durationFAB = 1000;
-        ViewPropertyAnimator animator = mFab.animate().y(mY_initial_position / 2).setDuration(durationFAB).setInterpolator(new DecelerateInterpolator()).setListener(listener);
+        ViewPropertyAnimator animator = mFab.animate().y(mY_initial_position / 2).setDuration(durationFAB).setInterpolator(new AccelerateInterpolator()).setListener(listener);
         animator.setStartDelay(startDelay);
         animator.start();
         changeVisibilityHUD(true, startDelay);
