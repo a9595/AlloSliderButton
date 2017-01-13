@@ -511,14 +511,15 @@ public class AlloDraggableButton extends RelativeLayout implements View.OnTouchL
         ViewPropertyAnimator animator = mFab.animate().y(mY_initial_position / 2).setDuration(durationFAB).setInterpolator(new DecelerateInterpolator()).setListener(listener);
         animator.setStartDelay(startDelay);
         animator.start();
-        changeVisibilityHUD(true, startDelay + durationFAB);
+        changeVisibilityHUD(true, startDelay);
 
-        /*mTvLocal.postDelayed(new Runnable() {
+        int boldTextDelay = (durationFAB / 2) + startDelay;
+        mTvLocal.postDelayed(new Runnable() {
             @Override
             public void run() {
                 mTvLocal.setTypeface(null, Typeface.BOLD);
             }
-        }, 500 + startDelay);*/
+        }, boldTextDelay);
     }
     //endregion
 
