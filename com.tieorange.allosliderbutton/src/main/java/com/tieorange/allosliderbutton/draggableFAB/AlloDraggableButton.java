@@ -6,14 +6,18 @@ import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.RippleDrawable;
 import android.os.Build;
+import android.os.Handler;
 import android.support.annotation.RequiresApi;
+import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewPropertyAnimator;
 import android.view.ViewTreeObserver;
+import android.view.animation.AccelerateInterpolator;
 import android.view.animation.Animation;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.RelativeLayout;
@@ -43,6 +47,7 @@ public class AlloDraggableButton extends RelativeLayout implements View.OnTouchL
     private static Float mX_initial_position = null;
     private static Float mY_initial_position = null;
     private View mRootView;
+    private RelativeLayout mRootLayout;
     private View mProgressLine;
     private TextView mTvGlobal;
     private TextView mTvLocal;
@@ -89,6 +94,7 @@ public class AlloDraggableButton extends RelativeLayout implements View.OnTouchL
         mTvLocal = (TextView) findViewById(R.id.local);
         mTvCancel = (TextView) findViewById(R.id.cancel);
         mTvFriends = (TextView) findViewById(R.id.friends);
+        mRootLayout = (RelativeLayout) findViewById(R.id.rootLayoutFabDraggable);
 
         initFAB();
         initAnimations();
@@ -135,7 +141,7 @@ public class AlloDraggableButton extends RelativeLayout implements View.OnTouchL
             @Override
             public void onClick(View v) {
                 Toast.makeText(mContext, "Clicked", Toast.LENGTH_SHORT).show();
-                tutorialSlideToGlobal(); // TODO: 1/13/17 RM
+//                tutorialSlideToGlobal(); // TODO: 1/13/17 RM
             }
         });
         mFab.setOnTouchListener(this);
@@ -401,7 +407,13 @@ public class AlloDraggableButton extends RelativeLayout implements View.OnTouchL
 
         mFab.setOnTouchListener(null);
         mFab.setClickable(false);
-        tutorialSlideToGlobal();
+        postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                tutorialSlideToGlobal();
+                makeRippleForTutorial();
+            }
+        }, 1000);
     }
 
     // Button will be swiped to the Top textView and come back (for tutorial)
@@ -429,7 +441,7 @@ public class AlloDraggableButton extends RelativeLayout implements View.OnTouchL
             }
         };
         int duration = 1500;
-        mFab.animate().y(0).setDuration(duration).setInterpolator(new DecelerateInterpolator()).setListener(listener).start();
+        mFab.animate().y(0).setDuration(duration).setInterpolator(new AccelerateInterpolator()).setListener(listener).start();
 
         // HUD:
         changeVisibilityHUD(true, 0);
@@ -444,11 +456,13 @@ public class AlloDraggableButton extends RelativeLayout implements View.OnTouchL
     }
 
     private void tutorialSlideToCancel(final boolean isPlayingLastTime) {
-        int startDelay = 2000;
+//        makeRippleForTutorial();
+
+        int startDelay = 500;
         Animator.AnimatorListener listener = new Animator.AnimatorListener() {
             @Override
             public void onAnimationStart(Animator animation) {
-
+                forceRippleAnimation(mRootView, !isPlayingLastTime);
             }
 
             @Override
@@ -468,6 +482,8 @@ public class AlloDraggableButton extends RelativeLayout implements View.OnTouchL
             }
         };
         int durationFAB = 1500;
+        if (isPlayingLastTime) durationFAB = durationFAB / 2;
+
         ViewPropertyAnimator animator = mFab.animate().y(mY_initial_position).setDuration(durationFAB).setInterpolator(new DecelerateInterpolator()).setListener(listener);
         animator.setStartDelay(startDelay);
         animator.start();
@@ -520,6 +536,66 @@ public class AlloDraggableButton extends RelativeLayout implements View.OnTouchL
                 mTvLocal.setTypeface(null, Typeface.BOLD);
             }
         }, boldTextDelay);
+    }
+
+    protected void forceRippleAnimation(View view, boolean isRippleHotspotOnTop) {
+        final RippleDrawable rippleDrawable = (RippleDrawable) ContextCompat.getDrawable(getContext(), R.drawable.ripple_effect);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            view.setBackground(rippleDrawable);
+            /*if (isRippleHotspotOnTop) {
+                rippleDrawable.setHotspot(mX_initial_position, 0);
+            } else {
+                rippleDrawable.setHotspot(mX_initial_position, mY_initial_position / 2);
+            }*/
+
+            rippleDrawable.setHotspot(mFab.getX(), mFab.getY());
+        }
+
+//        Drawable background = view.getBackground();
+
+        if (Build.VERSION.SDK_INT >= 22) {
+//            final RippleDrawable rippleDrawable = (RippleDrawable) background;
+
+            rippleDrawable.setState(new int[]{android.R.attr.state_pressed, android.R.attr.state_enabled});
+
+            Handler handler = new Handler();
+
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    rippleDrawable.setState(new int[]{});
+                }
+            }, 50);
+        }
+    }
+
+    private void makeRippleForTutorial() {
+        mRootLayout.performClick();
+        final Runnable pressRunnable;
+        Runnable unpressRunnable = null;
+
+        final Runnable finalUnpressRunnable = unpressRunnable;
+        pressRunnable = new Runnable() {
+            @Override
+            public void run() {
+                mRootLayout.setPressed(true);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                    mRootLayout.postOnAnimationDelayed(finalUnpressRunnable, 500);
+                }
+            }
+        };
+
+        unpressRunnable = new Runnable() {
+            @Override
+            public void run() {
+                mRootView.setPressed(false);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                    mRootView.postOnAnimationDelayed(pressRunnable, 500);
+                }
+            }
+        };
+
     }
     //endregion
 

@@ -22,6 +22,7 @@ public class DraggableActivity extends AppCompatActivity {
 
 //        initFAB();
 //        mAlloButton.tutorialSlideToGlobal();
+        mAlloButton.initTutorial();
     }
 
     private void initFAB() {
