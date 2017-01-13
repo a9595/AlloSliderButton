@@ -23,6 +23,15 @@ public class DraggableActivity extends AppCompatActivity {
 //        initFAB();
 //        mAlloButton.tutorialSlideToGlobal();
         mAlloButton.initTutorial();
+
+        mAlloButton.setOnTopTextViewListener(new ITextViewSelectedListener() {
+            @Override
+            public void selected() {
+                recreate();
+                mAlloButton.initTutorial();
+            }
+        });
+
     }
 
     private void initFAB() {

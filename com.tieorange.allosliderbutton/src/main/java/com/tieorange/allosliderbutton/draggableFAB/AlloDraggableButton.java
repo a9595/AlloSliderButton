@@ -74,6 +74,13 @@ public class AlloDraggableButton extends RelativeLayout implements View.OnTouchL
     private boolean mIsVisibleHUD;
     private boolean mIsTutorialEnabled = false;
 
+    public AlloDraggableButton(Context context) {
+        super(context);
+        mContext = context;
+
+        init(mContext);
+    }
+
     public AlloDraggableButton(Context context, AttributeSet attrs) {
         super(context, attrs);
 
@@ -85,7 +92,7 @@ public class AlloDraggableButton extends RelativeLayout implements View.OnTouchL
         init(context);
     }
 
-    private void init(Context context) {
+    public void init(Context context) {
         mContext = context;
         mRootView = inflate(context, R.layout.allo_draggable_button_layout, this);
         mFab = (com.github.clans.fab.FloatingActionButton) findViewById(R.id.fabDraggable);
@@ -98,7 +105,6 @@ public class AlloDraggableButton extends RelativeLayout implements View.OnTouchL
 
         initFAB();
         initAnimations();
-
     }
 
     private void initAnimations() {
@@ -468,10 +474,11 @@ public class AlloDraggableButton extends RelativeLayout implements View.OnTouchL
             @Override
             public void onAnimationEnd(Animator animation) {
                 if (isPlayingLastTime) {
-                    tutorialSlideToGlobal();
-//                    return;
+                    mITopTextViewSelectedListener.selected(); // TODO: 1/13/17 create c
+                    //                    tutorialSlideToGlobal();
+                } else {
+                    tutorialSlideToLocal();
                 }
-                tutorialSlideToLocal();
             }
 
             @Override
@@ -499,6 +506,7 @@ public class AlloDraggableButton extends RelativeLayout implements View.OnTouchL
             public void run() {
                 mTvGlobal.setTypeface(null, Typeface.NORMAL);
                 mTvLocal.setTypeface(null, Typeface.NORMAL);
+                mTvFriends.setTypeface(null, Typeface.NORMAL);
             }
         }, textBoldDelay);
     }
@@ -638,5 +646,9 @@ public class AlloDraggableButton extends RelativeLayout implements View.OnTouchL
      */
     public void showSlider() {
         mFab.setOnTouchListener(this);
+    }
+
+    public void hideFAB() {
+        mFab.setVisibility(View.GONE);
     }
 }
