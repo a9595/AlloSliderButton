@@ -13,13 +13,14 @@ import android.view.animation.DecelerateInterpolator;
 
 public class AnimationTools {
 
-    public static final int DURATION_MILLIS_FADE_IN = 500;
+    public static final int DURATION_MILLIS_FADE_IN = 1500;
     public static final int DURATION_MILLIS_FADE_OUT = 300;
 
-    public static Animation getAnimationFadeIn() {
+    public static Animation getAnimationFadeIn(long animationOffset) {
         Animation fadeIn = new AlphaAnimation(0, 1);
         fadeIn.setInterpolator(new DecelerateInterpolator()); //add this
         fadeIn.setDuration(DURATION_MILLIS_FADE_IN);
+        fadeIn.setStartOffset(animationOffset);
 
 //        AnimationSet animation = new AnimationSet(false); //change to false
 //        animation.addAnimation(fadeIn);
@@ -28,10 +29,10 @@ public class AnimationTools {
         return fadeIn;
     }
 
-    public static Animation getAnimationFadeOut() {
+    public static Animation getAnimationFadeOut(long animationOffset) {
         Animation fadeOut = new AlphaAnimation(1, 0);
         fadeOut.setInterpolator(new AccelerateInterpolator()); //and this
-//        fadeOut.setStartOffset(1000);
+        fadeOut.setStartOffset(animationOffset);
         fadeOut.setDuration(DURATION_MILLIS_FADE_OUT);
 
         return fadeOut;

@@ -8,6 +8,7 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewPropertyAnimator;
 import android.view.ViewTreeObserver;
 import android.view.animation.Animation;
 import android.view.animation.DecelerateInterpolator;
@@ -90,8 +91,8 @@ public class AlloDraggableButton extends RelativeLayout implements View.OnTouchL
     }
 
     private void initAnimations() {
-        mAnimationFadeIn = AnimationTools.getAnimationFadeIn();
-        mAnimationFadeOut = AnimationTools.getAnimationFadeOut();
+        mAnimationFadeIn = AnimationTools.getAnimationFadeIn(0);
+        mAnimationFadeOut = AnimationTools.getAnimationFadeOut(0);
 //        mProgressLine.startAnimation(animationFadeIn);
 //        mProgressLine.setVisibility(VISIBLE);
     }
@@ -127,7 +128,7 @@ public class AlloDraggableButton extends RelativeLayout implements View.OnTouchL
             @Override
             public void onClick(View v) {
                 Toast.makeText(mContext, "Clicked", Toast.LENGTH_SHORT).show();
-                slideToGlobalWithAnimation(); // TODO: 1/13/17 RM
+                tutorialSlideToGlobal(); // TODO: 1/13/17 RM
             }
         });
         mFab.setOnTouchListener(this);
@@ -156,9 +157,9 @@ public class AlloDraggableButton extends RelativeLayout implements View.OnTouchL
                 performMove(view, yNewOfFAB);
 
                 if (yNewOfFAB >= THRESHOLD_SHOW_HUD) {
-                    changeVisibilityHUD(false);
+                    changeVisibilityHUD(false, 0);
                 } else {
-                    changeVisibilityHUD(true);
+                    changeVisibilityHUD(true, 0);
                 }
 
                 checkFriendsMakeBold(xNewOfFAB);
@@ -178,7 +179,7 @@ public class AlloDraggableButton extends RelativeLayout implements View.OnTouchL
                     Log.d(TAG, "onTouch() called with:  X=" + view.getX() + "; Y=" + view.getY());
                     checkListeners(yNewOfFAB, xNewOfFAB);
                     restoreInitialX_Y(yNewOfFAB);
-                    changeVisibilityHUD(false);
+                    changeVisibilityHUD(false, 0);
                 }
                 break;
 
@@ -249,12 +250,12 @@ public class AlloDraggableButton extends RelativeLayout implements View.OnTouchL
 
     }
 
-    private void changeVisibilityHUD(boolean isVisible) {
-        changeVisibilityView(mProgressLine, isVisible);
-        changeVisibilityView(mTvGlobal, isVisible);
-        changeVisibilityView(mTvLocal, isVisible);
-        changeVisibilityView(mTvCancel, isVisible);
-        changeVisibilityView(mTvFriends, isVisible);
+    private void changeVisibilityHUD(boolean isVisible, long animationOffset) {
+        changeVisibilityView(mProgressLine, isVisible, animationOffset);
+        changeVisibilityView(mTvGlobal, isVisible, animationOffset);
+        changeVisibilityView(mTvLocal, isVisible, animationOffset);
+        changeVisibilityView(mTvCancel, isVisible, animationOffset);
+        changeVisibilityView(mTvFriends, isVisible, animationOffset);
         mIsVisibleHUD = isVisible;
     }
 
@@ -332,17 +333,17 @@ public class AlloDraggableButton extends RelativeLayout implements View.OnTouchL
         return yNew < mTopLowestPoint && yNew > mTopHighestPoint;
     }
 
-    private void changeVisibilityView(final View view, boolean isVisible) {
+    private void changeVisibilityView(final View view, boolean isVisible, long animationOffset) {
         if (view == null) return;
 
         if (isVisible || !mIsVisibleHUD) {
             if (isVisible && !mIsVisibleHUD) {
-                Animation animationFadeIn = AnimationTools.getAnimationFadeIn();
+                Animation animationFadeIn = AnimationTools.getAnimationFadeIn(animationOffset);
                 view.setVisibility(View.VISIBLE);
                 view.startAnimation(animationFadeIn);
             }
         } else {
-            Animation animationFadeOut = AnimationTools.getAnimationFadeOut();
+            Animation animationFadeOut = AnimationTools.getAnimationFadeOut(animationOffset);
             animationFadeOut.setAnimationListener(new Animation.AnimationListener() {
                 @Override
                 public void onAnimationStart(Animation animation) {
@@ -387,14 +388,119 @@ public class AlloDraggableButton extends RelativeLayout implements View.OnTouchL
 
     }
 
+    //region Tutorial
     // Button will be swiped to the Top textView and come back (for tutorial)
-    public void slideToGlobalWithAnimation() {
+    public void tutorialSlideToGlobal() {
         // FAB:
-        mFab.animate().y(0).setDuration(1500).setInterpolator(new DecelerateInterpolator()).start();
+        Animator.AnimatorListener listener = new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                tutorialSlideToCancel();
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animation) {
+
+            }
+        };
+        int duration = 1500;
+        mFab.animate().y(0).setDuration(duration).setInterpolator(new DecelerateInterpolator()).setListener(listener).start();
 
         // HUD:
-        changeVisibilityHUD(true);
+        changeVisibilityHUD(true, 0);
+
+        mTvGlobal.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                mTvGlobal.setTypeface(null, Typeface.BOLD);
+            }
+        }, duration - 700);
     }
+
+    private void tutorialSlideToCancel() {
+        int startDelay = 2000;
+        Animator.AnimatorListener listener = new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                tutorialSlideToLocal();
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animation) {
+
+            }
+        };
+        int durationFAB = 1500;
+        ViewPropertyAnimator animator = mFab.animate().y(mY_initial_position).setDuration(durationFAB).setInterpolator(new DecelerateInterpolator()).setListener(listener);
+        animator.setStartDelay(startDelay);
+        animator.start();
+        changeVisibilityHUD(false, startDelay + durationFAB);
+
+        mTvGlobal.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                mTvGlobal.setTypeface(null, Typeface.NORMAL);
+            }
+        }, 500 + startDelay);
+    }
+
+    private void tutorialSlideToLocal() {
+        int startDelay = 2000;
+        Animator.AnimatorListener listener = new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                tutorialSlideToCancel();
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animation) {
+
+            }
+        };
+        int durationFAB = 1000;
+        ViewPropertyAnimator animator = mFab.animate().y(mY_initial_position / 2).setDuration(durationFAB).setInterpolator(new DecelerateInterpolator()).setListener(listener);
+        animator.setStartDelay(startDelay);
+        animator.start();
+        changeVisibilityHUD(true, startDelay + durationFAB);
+
+        mTvLocal.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                mTvLocal.setTypeface(null, Typeface.BOLD);
+            }
+        }, 500 + startDelay);
+    }
+    //endregion
 
     public void setOnRightTextViewListener(ITextViewSelectedListener iTextViewSelectedListener) {
         mIRightTextViewSelected = iTextViewSelectedListener;
