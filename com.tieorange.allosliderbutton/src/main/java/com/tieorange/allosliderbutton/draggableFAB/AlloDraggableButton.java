@@ -467,7 +467,10 @@ public class AlloDraggableButton extends RelativeLayout implements View.OnTouchL
 
             @Override
             public void onAnimationEnd(Animator animation) {
-                if (isPlayingLastTime) return;
+                if (isPlayingLastTime) {
+                    tutorialSlideToGlobal();
+//                    return;
+                }
                 tutorialSlideToLocal();
             }
 
