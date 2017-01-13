@@ -501,6 +501,7 @@ public class AlloDraggableButton extends RelativeLayout implements View.OnTouchL
         changeVisibilityHUD(false, HUDanimationOffset);
 
         int textBoldDelay = (durationFAB / 4) + startDelay;
+
         mTvGlobal.postDelayed(new Runnable() {
             @Override
             public void run() {

@@ -13,6 +13,7 @@ import com.tieorange.allosliderbutton.draggableFAB.ITextViewSelectedListener;
 
 public class DraggableActivity extends AppCompatActivity {
     private AlloDraggableButton mAlloButton;
+    private Runnable runnableRecreateView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,11 +25,19 @@ public class DraggableActivity extends AppCompatActivity {
 //        mAlloButton.tutorialSlideToGlobal();
         mAlloButton.initTutorial();
 
+
+        runnableRecreateView = new Runnable() {
+            @Override
+            public void run() {
+                recreate();
+            }
+        };
+
         mAlloButton.setOnTopTextViewListener(new ITextViewSelectedListener() {
             @Override
             public void selected() {
-                recreate();
-                mAlloButton.initTutorial();
+                mAlloButton.postDelayed(runnableRecreateView, 500);
+//                mAlloButton.initTutorial();
             }
         });
 
