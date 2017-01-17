@@ -30,7 +30,7 @@ import com.tieorange.allosliderbutton.R;
  * Created by root on 1/7/17.
  */
 
-public class AlloDraggableButton extends RelativeLayout implements View.OnTouchListener {
+public class AlloDraggableButton extends RelativeLayout implements View.OnTouchListener, Cloneable {
     private static final String TAG = AlloDraggableButton.class.getSimpleName();
     private static final float MAX_X_MOVE_ON_CLICK = 30f;
     private static final float MAX_Y_MOVE_ON_CLICK = 30f;
@@ -477,7 +477,7 @@ public class AlloDraggableButton extends RelativeLayout implements View.OnTouchL
             public void onAnimationEnd(Animator animation) {
 
                 if (mSliderToCancelCount >= 3) {
-                    mITutorialFinishedListener.finished(); // TODO: 1/13/17 create listener
+                    if (mITutorialFinishedListener != null) mITutorialFinishedListener.finished();
                 } else if (mSliderToCancelCount == 2) {
                     tutorialSlideToFriends();
                 } else if (mSliderToCancelCount == 1) {
@@ -501,7 +501,7 @@ public class AlloDraggableButton extends RelativeLayout implements View.OnTouchL
 
         Interpolator interpolator = new DecelerateInterpolator();
         ViewPropertyAnimator animator = mFab.animate().y(mY_initial_position).setDuration(durationFAB).setInterpolator(interpolator).setListener(listener);
-        animator.setStartDelay(startDelay);
+//        animator.setStartDelay(startDelay);
         animator.start();
         int HUDanimationOffset = startDelay + (durationFAB - (durationFAB / 4));
         changeVisibilityHUD(false, HUDanimationOffset);
@@ -578,7 +578,7 @@ public class AlloDraggableButton extends RelativeLayout implements View.OnTouchL
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             view.setBackground(rippleDrawable);
-            rippleDrawable.setHotspot(mX_initial_position, mFab.getY());
+            rippleDrawable.setHotspot(mX_initial_position, mFab.getY()); // TODO: 1/17/17 fix hotspot to right side
         }
 
 
@@ -642,5 +642,10 @@ public class AlloDraggableButton extends RelativeLayout implements View.OnTouchL
 
     public void hideFAB() {
         mFab.setVisibility(View.GONE);
+    }
+
+    @Override
+    protected Object clone() throws CloneNotSupportedException {
+        return super.clone();
     }
 }

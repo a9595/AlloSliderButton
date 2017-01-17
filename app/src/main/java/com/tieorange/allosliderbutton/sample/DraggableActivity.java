@@ -1,9 +1,11 @@
 package com.tieorange.allosliderbutton.sample;
 
 import android.graphics.drawable.Drawable;
+import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import com.tieorange.allosliderbutton.draggableFAB.AlloDraggableButton;
@@ -11,19 +13,33 @@ import com.tieorange.allosliderbutton.draggableFAB.IFabOnClickListener;
 import com.tieorange.allosliderbutton.draggableFAB.IPercentsSliderListener;
 import com.tieorange.allosliderbutton.draggableFAB.ITextViewSelectedListener;
 import com.tieorange.allosliderbutton.draggableFAB.ITutorialFinishedListener;
+import com.tieorange.allosliderbutton.draggableFAB.IntroFragmentAllo;
 
 public class DraggableActivity extends AppCompatActivity {
     private AlloDraggableButton mAlloButton;
     private Runnable runnableRecreateView;
+    private FrameLayout mContainer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_draggable);
         mAlloButton = (AlloDraggableButton) findViewById(R.id.alloButton);
+        mContainer = (FrameLayout) findViewById(R.id.fragmentContainer);
 
+        initFragment();
 //        initFAB();
 //        mAlloButton.tutorialSlideToGlobal();
+//        initAlloTutorial();
+
+    }
+
+    private void initFragment() {
+        Fragment fragment = IntroFragmentAllo.newInstance();
+        getSupportFragmentManager().beginTransaction().add(R.id.fragmentContainer, fragment, "intro").commit();
+    }
+
+    private void initAlloTutorial() {
         mAlloButton.initTutorial();
 
 
@@ -39,7 +55,6 @@ public class DraggableActivity extends AppCompatActivity {
                 mAlloButton.postDelayed(runnableRecreateView, 500);
             }
         });
-
     }
 
     private void initFAB() {
