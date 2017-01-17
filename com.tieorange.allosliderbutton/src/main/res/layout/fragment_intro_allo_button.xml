@@ -1,37 +1,29 @@
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                                             xmlns:app="http://schemas.android.com/apk/res-auto"
-                                             xmlns:tools="http://schemas.android.com/tools"
-                                             android:id="@+id/rootLayoutIntro"
-                                             android:layout_width="match_parent"
-                                             android:layout_height="match_parent"
-                                             android:background="@color/colorAccentYellow"
-                                             tools:context="com.tieorange.allosliderbutton.draggableFAB.FragmentIntroAlloButton"
-                                             tools:layout_editor_absoluteX="0dp"
-                                             tools:layout_editor_absoluteY="112dp">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:id="@+id/rootLayoutIntro"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/colorAccentYellow"
+                tools:context="com.tieorange.allosliderbutton.draggableFAB.FragmentIntroAlloButton"
+                tools:layout_editor_absoluteX="0dp"
+                tools:layout_editor_absoluteY="112dp">
 
 
     <View
         android:id="@+id/bottomSheet"
-        android:layout_width="0dp"
-        android:layout_height="290dp"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:layout_alignParentBottom="true"
         android:background="@color/colorPrimary"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        tools:layout_constraintBottom_creator="1"
-        tools:layout_constraintLeft_creator="1"
-        tools:layout_constraintRight_creator="1"/>
+        />
 
     <com.tieorange.allosliderbutton.draggableFAB.AlloDraggableButton
         android:id="@+id/alloButtonTutorial"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        tools:layout_constraintLeft_creator="1"
-        tools:layout_constraintRight_creator="1"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="160dp"
         tools:layout_height="200dp"
-        tools:layout_width="300dp"
-        app:layout_constraintBottom_toBottomOf="@+id/bottomSheet"
-        android:layout_marginBottom="200dp"/>
-</android.support.constraint.ConstraintLayout>
+        tools:layout_width="300dp"/>
+</RelativeLayout>

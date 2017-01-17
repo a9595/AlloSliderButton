@@ -37,7 +37,7 @@ public class DraggableActivity extends AppCompatActivity {
         IIntroViewCreated listener = new IIntroViewCreated() {
             @Override
             public void created() {
-                fragment.setBottomSheetHeight(DraggableActivity.this, 230);
+//                fragment.setBottomSheetHeight(DraggableActivity.this, 230);
             }
         };
         fragment.setIIntroViewCreated(listener);

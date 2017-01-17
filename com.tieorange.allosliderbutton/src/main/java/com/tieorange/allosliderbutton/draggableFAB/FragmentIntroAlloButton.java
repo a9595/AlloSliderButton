@@ -4,12 +4,12 @@ package com.tieorange.allosliderbutton.draggableFAB;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 
 import com.tieorange.allosliderbutton.R;
 import com.tieorange.allosliderbutton.Tools;
@@ -31,7 +31,7 @@ public class FragmentIntroAlloButton extends Fragment {
     private String mParam1;
     private String mParam2;
     private AlloDraggableButton mAlloButton;
-    private ConstraintLayout mRootLayout;
+    private RelativeLayout mRootLayout;
     private View mBottomSheetView;
 
 
@@ -98,7 +98,7 @@ public class FragmentIntroAlloButton extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_intro_allo_button, container, false);
         mAlloButton = (AlloDraggableButton) view.findViewById(R.id.alloButtonTutorial);
-        mRootLayout = (ConstraintLayout) view.findViewById(R.id.rootLayoutIntro);
+        mRootLayout = (RelativeLayout) view.findViewById(R.id.rootLayoutIntro);
         mBottomSheetView = view.findViewById(R.id.bottomSheet);
         return view;
     }
