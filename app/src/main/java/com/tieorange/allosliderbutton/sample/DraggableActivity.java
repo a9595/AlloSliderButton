@@ -9,6 +9,7 @@ import android.widget.Toast;
 import com.tieorange.allosliderbutton.draggableFAB.AlloDraggableButton;
 import com.tieorange.allosliderbutton.draggableFAB.FragmentIntroAlloButton;
 import com.tieorange.allosliderbutton.draggableFAB.IFabOnClickListener;
+import com.tieorange.allosliderbutton.draggableFAB.IIntroViewCreated;
 import com.tieorange.allosliderbutton.draggableFAB.IPercentsSliderListener;
 import com.tieorange.allosliderbutton.draggableFAB.ITextViewSelectedListener;
 import com.tieorange.allosliderbutton.draggableFAB.ITutorialFinishedListener;
@@ -32,7 +33,14 @@ public class DraggableActivity extends AppCompatActivity {
     }
 
     private void initFragment() {
-        Fragment fragment = FragmentIntroAlloButton.newInstance();
+        final FragmentIntroAlloButton fragment = FragmentIntroAlloButton.newInstance();
+        IIntroViewCreated listener = new IIntroViewCreated() {
+            @Override
+            public void created() {
+                fragment.setBottomSheetHeight(DraggableActivity.this, 230);
+            }
+        };
+        fragment.setIIntroViewCreated(listener);
         getSupportFragmentManager().beginTransaction().add(R.id.fragmentContainer, fragment, "intro").commit();
     }
 

@@ -13,11 +13,9 @@
     <View
         android:id="@+id/bottomSheet"
         android:layout_width="0dp"
-        android:layout_height="230dp"
-
+        android:layout_height="290dp"
         android:background="@color/colorPrimary"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         tools:layout_constraintBottom_creator="1"

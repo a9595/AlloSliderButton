@@ -1,6 +1,7 @@
 package com.tieorange.allosliderbutton.draggableFAB;
 
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
@@ -9,9 +10,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.RelativeLayout;
 
 import com.tieorange.allosliderbutton.R;
+import com.tieorange.allosliderbutton.Tools;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -24,12 +25,14 @@ public class FragmentIntroAlloButton extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
+    private IIntroViewCreated sIIntroViewCreated;
 
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
     private AlloDraggableButton mAlloButton;
     private ConstraintLayout mRootLayout;
+    private View mBottomSheetView;
 
 
     public FragmentIntroAlloButton() {
@@ -56,6 +59,8 @@ public class FragmentIntroAlloButton extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         initViews();
+        sIIntroViewCreated.created();
+//        setBottomSheetHeight(getContext(), 300);
     }
 
     private void initViews() {
@@ -94,7 +99,15 @@ public class FragmentIntroAlloButton extends Fragment {
         View view = inflater.inflate(R.layout.fragment_intro_allo_button, container, false);
         mAlloButton = (AlloDraggableButton) view.findViewById(R.id.alloButtonTutorial);
         mRootLayout = (ConstraintLayout) view.findViewById(R.id.rootLayoutIntro);
+        mBottomSheetView = view.findViewById(R.id.bottomSheet);
         return view;
+    }
+
+    public void setBottomSheetHeight(Context context, int heightInDp) {
+        int heightConverted = Tools.convertDpToPx(heightInDp, context);
+        ViewGroup.LayoutParams layoutParams = mBottomSheetView.getLayoutParams();
+        layoutParams.height = heightConverted;
+        mBottomSheetView.setLayoutParams(layoutParams);
     }
 
     /*private void initExtras() {
@@ -104,4 +117,7 @@ public class FragmentIntroAlloButton extends Fragment {
         }
     }*/
 
+    public void setIIntroViewCreated(IIntroViewCreated iIntroViewCreated) {
+        sIIntroViewCreated = iIntroViewCreated;
+    }
 }
