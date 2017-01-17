@@ -3,6 +3,7 @@ package com.tieorange.allosliderbutton.draggableFAB;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -28,7 +29,7 @@ public class FragmentIntroAlloButton extends Fragment {
     private String mParam1;
     private String mParam2;
     private AlloDraggableButton mAlloButton;
-    private RelativeLayout mRootLayout;
+    private ConstraintLayout mRootLayout;
 
 
     public FragmentIntroAlloButton() {
@@ -92,7 +93,7 @@ public class FragmentIntroAlloButton extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_intro_allo_button, container, false);
         mAlloButton = (AlloDraggableButton) view.findViewById(R.id.alloButtonTutorial);
-        mRootLayout = (RelativeLayout) view.findViewById(R.id.rootLayoutIntro);
+        mRootLayout = (ConstraintLayout) view.findViewById(R.id.rootLayoutIntro);
         return view;
     }
 
