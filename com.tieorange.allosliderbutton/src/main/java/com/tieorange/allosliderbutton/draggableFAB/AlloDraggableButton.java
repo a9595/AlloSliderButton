@@ -32,8 +32,8 @@ import com.tieorange.allosliderbutton.R;
 
 public class AlloDraggableButton extends RelativeLayout implements View.OnTouchListener, Cloneable {
     private static final String TAG = AlloDraggableButton.class.getSimpleName();
-    private static final float MAX_X_MOVE_ON_CLICK = 30f;
-    private static final float MAX_Y_MOVE_ON_CLICK = 30f;
+    private static final float MAX_X_MOVE_ON_CLICK = 10f; // was 30
+    private static final float MAX_Y_MOVE_ON_CLICK = 10f;
     private static Float THRESHOLD_SHOW_HUD;
     private static final int PERCENTS_OF_THRESHOLD = 100; // how many percents should view go to show HUD (global, local)
     private static int THRESHOLD_SNAPPING = 90;
@@ -145,13 +145,14 @@ public class AlloDraggableButton extends RelativeLayout implements View.OnTouchL
             }
         });
 
-        mFab.setOnClickListener(new OnClickListener() {
+        /*mFab.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (mIFabOnClickListener != null) mIFabOnClickListener.onClick();
                 Toast.makeText(mContext, "Clicked", Toast.LENGTH_SHORT).show();
 //                tutorialSlideToGlobal(); // TODO: 1/13/17 RM
             }
-        });
+        });*/
         mFab.setOnTouchListener(this);
     }
 
@@ -162,12 +163,14 @@ public class AlloDraggableButton extends RelativeLayout implements View.OnTouchL
         Float xNewOfFAB;
         switch (event.getActionMasked()) {
             case MotionEvent.ACTION_DOWN:
+                mLastAction = MotionEvent.ACTION_DOWN;
                 if (Math.abs(event.getX()) < MAX_X_MOVE_ON_CLICK || Math.abs(event.getY()) < MAX_Y_MOVE_ON_CLICK) {
                     view.performClick();
+                    if (mIFabOnClickListener != null) mIFabOnClickListener.onClick();
+                    Log.d("Clicked", "onTouch: clicked MOVED FINGER");
                 } else {
                     mDeltaY = view.getY() - event.getRawY();
                     mDeltaX = view.getX() - event.getRawX();
-                    mLastAction = MotionEvent.ACTION_DOWN;
                 }
                 break;
 
@@ -195,6 +198,7 @@ public class AlloDraggableButton extends RelativeLayout implements View.OnTouchL
                 if (mLastAction == MotionEvent.ACTION_DOWN) {
                     view.performClick();
                     if (mIFabOnClickListener != null) mIFabOnClickListener.onClick();
+                    Log.d("Clicked", "onTouch: clicked");
                 }
                 if (mLastAction == MotionEvent.ACTION_MOVE) {
                     Log.d(TAG, "onTouch() called with:  X=" + view.getX() + "; Y=" + view.getY());
@@ -207,7 +211,7 @@ public class AlloDraggableButton extends RelativeLayout implements View.OnTouchL
             default:
                 return false;
         }
-        return true;
+        return false;
 
 
     }

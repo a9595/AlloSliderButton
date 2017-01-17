@@ -67,8 +67,15 @@ public class FragmentIntroAlloButton extends Fragment {
     }
 
     private void initViews() {
-        mAlloButton.initTutorial();
-        initTutorialFinishedListener(mAlloButton);
+        // TODO: 1/17/17 uncomment (Debug only)
+//        mAlloButton.initTutorial();
+//        initTutorialFinishedListener(mAlloButton);
+        mAlloButton.setOnFabClickListener(new IFabOnClickListener() {
+            @Override
+            public void onClick() {
+                Log.d("Clicked", "FRAGMENT fab onClick() called");
+            }
+        });
     }
 
     private void initTutorialFinishedListener(AlloDraggableButton alloButton) {
