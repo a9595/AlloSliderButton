@@ -34,13 +34,6 @@ public class DraggableActivity extends AppCompatActivity {
 
     private void initFragment() {
         final FragmentIntroAlloButton fragment = FragmentIntroAlloButton.newInstance();
-        IIntroViewCreated listener = new IIntroViewCreated() {
-            @Override
-            public void created() {
-//                fragment.setBottomSheetHeight(DraggableActivity.this, 230);
-            }
-        };
-        fragment.setIIntroViewCreated(listener);
         getSupportFragmentManager().beginTransaction().add(R.id.fragmentContainer, fragment, "intro").commit();
     }
 
