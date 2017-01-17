@@ -24,7 +24,6 @@ public class DraggableActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_draggable);
-        mAlloButton = (AlloDraggableButton) findViewById(R.id.alloButton);
         mContainer = (FrameLayout) findViewById(R.id.fragmentContainer);
 
         initFragment();

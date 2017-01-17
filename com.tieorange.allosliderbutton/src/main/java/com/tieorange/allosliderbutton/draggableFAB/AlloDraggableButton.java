@@ -501,7 +501,7 @@ public class AlloDraggableButton extends RelativeLayout implements View.OnTouchL
 
         Interpolator interpolator = new DecelerateInterpolator();
         ViewPropertyAnimator animator = mFab.animate().y(mY_initial_position).setDuration(durationFAB).setInterpolator(interpolator).setListener(listener);
-//        animator.setStartDelay(startDelay);
+        animator.setStartDelay(startDelay);
         animator.start();
         int HUDanimationOffset = startDelay + (durationFAB - (durationFAB / 4));
         changeVisibilityHUD(false, HUDanimationOffset);

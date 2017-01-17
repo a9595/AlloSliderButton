@@ -72,12 +72,14 @@ public class IntroFragmentAllo extends Fragment {
 
     private void recreateAlloButton() {
         // Remove view
+        ViewGroup.LayoutParams layoutParams = mAlloButton.getLayoutParams();
         ((ViewGroup) mAlloButton.getParent()).removeView(mAlloButton);
 
         // Add view back
         AlloDraggableButton newButton = new AlloDraggableButton(getContext());
         mAlloButton = newButton;
-        mRootLayout.addView(newButton, LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+
+        mRootLayout.addView(newButton, layoutParams);
         mAlloButton.initTutorial();
     }
 
