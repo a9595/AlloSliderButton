@@ -8,18 +8,17 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 import com.tieorange.allosliderbutton.R;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link IntroFragmentAllo#newInstance} factory method to
+ * Use the {@link FragmentIntroAlloButton#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class IntroFragmentAllo extends Fragment {
-    private static final String TAG = IntroFragmentAllo.class.getSimpleName();
+public class FragmentIntroAlloButton extends Fragment {
+    private static final String TAG = FragmentIntroAlloButton.class.getSimpleName();
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -32,13 +31,13 @@ public class IntroFragmentAllo extends Fragment {
     private RelativeLayout mRootLayout;
 
 
-    public IntroFragmentAllo() {
+    public FragmentIntroAlloButton() {
         // Required empty public constructor
     }
 
     // TODO: Rename and change types and number of parameters
-    public static IntroFragmentAllo newInstance() {
-        IntroFragmentAllo fragment = new IntroFragmentAllo();
+    public static FragmentIntroAlloButton newInstance() {
+        FragmentIntroAlloButton fragment = new FragmentIntroAlloButton();
         /*Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -60,8 +59,11 @@ public class IntroFragmentAllo extends Fragment {
 
     private void initViews() {
         mAlloButton.initTutorial();
+        initTutorialFinishedListener(mAlloButton);
+    }
 
-        mAlloButton.setOnTutorialFinishedListener(new ITutorialFinishedListener() {
+    private void initTutorialFinishedListener(AlloDraggableButton alloButton) {
+        alloButton.setOnTutorialFinishedListener(new ITutorialFinishedListener() {
             @Override
             public void finished() {
                 Log.d(TAG, "finished() called");
@@ -81,13 +83,14 @@ public class IntroFragmentAllo extends Fragment {
 
         mRootLayout.addView(newButton, layoutParams);
         mAlloButton.initTutorial();
+        initTutorialFinishedListener(mAlloButton);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_intro_fragment_allo, container, false);
+        View view = inflater.inflate(R.layout.fragment_intro_allo_button, container, false);
         mAlloButton = (AlloDraggableButton) view.findViewById(R.id.alloButtonTutorial);
         mRootLayout = (RelativeLayout) view.findViewById(R.id.rootLayoutIntro);
         return view;
