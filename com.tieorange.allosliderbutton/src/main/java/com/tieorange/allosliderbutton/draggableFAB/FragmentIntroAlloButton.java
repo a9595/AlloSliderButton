@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import com.tieorange.allosliderbutton.R;
 import com.tieorange.allosliderbutton.Tools;
@@ -65,11 +66,11 @@ public class FragmentIntroAlloButton extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         initViews();
     }
-
     private void initViews() {
         // TODO: 1/17/17 uncomment (Debug only)
         mAlloButton.initTutorial();
         initTutorialFinishedListener(mAlloButton);
+
         mAlloButton.setOnFabClickListener(new IFabOnClickListener() {
             @Override
             public void onClick() {

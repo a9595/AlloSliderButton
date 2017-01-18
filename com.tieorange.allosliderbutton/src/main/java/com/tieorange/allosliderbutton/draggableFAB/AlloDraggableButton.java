@@ -31,7 +31,7 @@ import java.util.Calendar;
  * Created by root on 1/7/17.
  */
 
-public class AlloDraggableButton extends RelativeLayout implements View.OnTouchListener, Cloneable {
+public class AlloDraggableButton extends RelativeLayout implements View.OnTouchListener, Cloneable, View.OnClickListener {
     private static final String TAG = AlloDraggableButton.class.getSimpleName();
     private static final float MAX_X_MOVE_ON_CLICK = 1f; // was 30
     private static final float MAX_Y_MOVE_ON_CLICK = 1f;
@@ -638,13 +638,16 @@ public class AlloDraggableButton extends RelativeLayout implements View.OnTouchL
     /**
      * If true - will enable the ability too swipe FAB.
      * If false - will be only clickable.
+     *
      * @param isEnabled
      */
     public void setSwipeEnabled(boolean isEnabled) {
         if (isEnabled) {
             mFab.setOnTouchListener(this);
+            mFab.setOnClickListener(null);
         } else {
             mFab.setOnTouchListener(null);
+            mFab.setOnClickListener(this);
         }
     }
 
@@ -652,19 +655,6 @@ public class AlloDraggableButton extends RelativeLayout implements View.OnTouchL
         mFab.setImageDrawable(drawable);
     }
 
-    /**
-     * Make a button not slidable
-     */
-    public void hideSlider() {
-        mFab.setOnTouchListener(null);
-    }
-
-    /**
-     * Make a button slidable and show a slider
-     */
-    public void showSlider() {
-        mFab.setOnTouchListener(this);
-    }
 
     public void hideFAB() {
         mFab.setVisibility(View.GONE);
@@ -673,5 +663,10 @@ public class AlloDraggableButton extends RelativeLayout implements View.OnTouchL
     @Override
     protected Object clone() throws CloneNotSupportedException {
         return super.clone();
+    }
+
+    @Override
+    public void onClick(View v) {
+        if (mIFabOnClickListener != null) mIFabOnClickListener.onClick();
     }
 }
