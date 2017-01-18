@@ -23,6 +23,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.tieorange.allosliderbutton.R;
+import com.tieorange.allosliderbutton.Tools;
 
 import java.util.Calendar;
 
@@ -35,6 +36,7 @@ public class AlloDraggableButton extends RelativeLayout implements View.OnTouchL
     private static final float MAX_X_MOVE_ON_CLICK = 1f; // was 30
     private static final float MAX_Y_MOVE_ON_CLICK = 1f;
     private static final long MAX_CLICK_DURATION = 130;
+    private static final float MAX_SWIPE_DISTANCE_DP = 10;
     private static Float THRESHOLD_SHOW_HUD;
     private static final int PERCENTS_OF_THRESHOLD = 100; // how many percents should view go to show HUD (global, local)
     private static int THRESHOLD_SNAPPING = 90;
@@ -148,17 +150,6 @@ public class AlloDraggableButton extends RelativeLayout implements View.OnTouchL
 
             }
         });
-
-        mFab.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (mLastAction == MotionEvent.ACTION_DOWN) {
-                    if (mIFabOnClickListener != null) mIFabOnClickListener.onClick();
-                    Toast.makeText(mContext, "onClick() Clicked", Toast.LENGTH_SHORT).show();
-                }
-//                tutorialSlideToGlobal(); // TODO: 1/13/17 RM
-            }
-        });
         mFab.setOnTouchListener(this);
     }
 
@@ -209,10 +200,11 @@ public class AlloDraggableButton extends RelativeLayout implements View.OnTouchL
                 yNewOfFAB = event.getRawY() + mDeltaY;
                 xNewOfFAB = event.getRawX() + mDeltaX;
 
-                if (clickDuration < MAX_CLICK_DURATION) {
+                boolean isDistanceOfSwipeShort = isDistanceOfSwipeShort(event.getX(), event.getY());
+                if (clickDuration < MAX_CLICK_DURATION && isDistanceOfSwipeShort) {
 //                    view.performClick();
                     if (mIFabOnClickListener != null) mIFabOnClickListener.onClick();
-                    Log.d("Clicked", "onTouch: clicked");
+                    Log.d("Clicked", "onTouch: clicked; DISTANCE = " + distanceSwipe(mActionDownX, mActionDownY, event.getX(), event.getY()));
                 }
                 if (mLastAction == MotionEvent.ACTION_MOVE) {
                     Log.d(TAG, "onTouch() called with:  X=" + view.getX() + "; Y=" + view.getY());
@@ -226,6 +218,17 @@ public class AlloDraggableButton extends RelativeLayout implements View.OnTouchL
                 return false;
         }
         return false;
+    }
+
+    private boolean isDistanceOfSwipeShort(float x, float y) {
+        return distanceSwipe(mActionDownX, mActionDownY, x, y) < MAX_SWIPE_DISTANCE_DP;
+    }
+
+    private static float distanceSwipe(float x1, float y1, float x2, float y2) {
+        float dx = x1 - x2;
+        float dy = y1 - y2;
+        float distanceInPx = (float) Math.sqrt(dx * dx + dy * dy);
+        return Tools.convertPxToDp(distanceInPx);
     }
 
     private void checkFriendsMakeBold(Float xNewOfFAB) {

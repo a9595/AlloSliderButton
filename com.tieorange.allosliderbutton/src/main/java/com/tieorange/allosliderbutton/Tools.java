@@ -20,7 +20,7 @@ public class Tools {
                 dp * (context.getResources().getDisplayMetrics().xdpi / DisplayMetrics.DENSITY_DEFAULT));
     }
 
-    public static int convertPxToDp(int px) {
+    public static int convertPxToDp(float px) {
         return Math.round(
                 px / (Resources.getSystem().getDisplayMetrics().xdpi / DisplayMetrics.DENSITY_DEFAULT));
     }
