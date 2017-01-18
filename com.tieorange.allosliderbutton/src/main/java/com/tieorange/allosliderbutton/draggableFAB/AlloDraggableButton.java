@@ -16,8 +16,6 @@ import android.view.ViewPropertyAnimator;
 import android.view.ViewTreeObserver;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.Animation;
-import android.view.animation.AnticipateOvershootInterpolator;
-import android.view.animation.BounceInterpolator;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.Interpolator;
 import android.widget.RelativeLayout;
@@ -26,14 +24,17 @@ import android.widget.Toast;
 
 import com.tieorange.allosliderbutton.R;
 
+import java.util.Calendar;
+
 /**
  * Created by root on 1/7/17.
  */
 
 public class AlloDraggableButton extends RelativeLayout implements View.OnTouchListener, Cloneable {
     private static final String TAG = AlloDraggableButton.class.getSimpleName();
-    private static final float MAX_X_MOVE_ON_CLICK = 10f; // was 30
-    private static final float MAX_Y_MOVE_ON_CLICK = 10f;
+    private static final float MAX_X_MOVE_ON_CLICK = 1f; // was 30
+    private static final float MAX_Y_MOVE_ON_CLICK = 1f;
+    private static final long MAX_CLICK_DURATION = 130;
     private static Float THRESHOLD_SHOW_HUD;
     private static final int PERCENTS_OF_THRESHOLD = 100; // how many percents should view go to show HUD (global, local)
     private static int THRESHOLD_SNAPPING = 90;
@@ -75,6 +76,9 @@ public class AlloDraggableButton extends RelativeLayout implements View.OnTouchL
     private boolean mIsTutorialEnabled = false;
     private int mSliderToCancelCount = 0; // 1 - global ; 2 - local; 3 - friends;
     private ITutorialFinishedListener mITutorialFinishedListener;
+    private float mActionDownX;
+    private float mActionDownY;
+    private long mStartClickTime;
 
     public AlloDraggableButton(Context context) {
         super(context);
@@ -166,19 +170,25 @@ public class AlloDraggableButton extends RelativeLayout implements View.OnTouchL
         switch (event.getActionMasked()) {
             case MotionEvent.ACTION_DOWN:
                 mLastAction = MotionEvent.ACTION_DOWN;
-                if (Math.abs(event.getX()) < MAX_X_MOVE_ON_CLICK || Math.abs(event.getY()) < MAX_Y_MOVE_ON_CLICK) {
-                    view.performClick();
-//                    if (mIFabOnClickListener != null) mIFabOnClickListener.onClick();
-                    Log.d("Clicked", "onTouch: clicked MOVED FINGER");
-                } else {
-                    mDeltaY = view.getY() - event.getRawY();
-                    mDeltaX = view.getX() - event.getRawX();
-                }
+
+                mDeltaY = view.getY() - event.getRawY();
+                mDeltaX = view.getX() - event.getRawX();
+                mActionDownX = event.getX();
+                mActionDownY = event.getY();
+
+                mStartClickTime = Calendar.getInstance().getTimeInMillis();
                 break;
 
             case MotionEvent.ACTION_MOVE:
                 yNewOfFAB = event.getRawY() + mDeltaY;
                 xNewOfFAB = event.getRawX() + mDeltaX;
+
+
+                float swipeDistanceY = Math.abs(event.getY() - mActionDownY);
+                float swipeDistanceX = Math.abs(event.getX() - mActionDownX);
+//                Log.d("Move", "onTouch() called with Delta =  " + swipeDistanceX + "; " + swipeDistanceY);
+                // check if clicked
+//                if (swipeDistanceX <= MAX_X_MOVE_ON_CLICK || swipeDistanceY <= MAX_Y_MOVE_ON_CLICK) {
 
                 performMove(view, yNewOfFAB);
 
@@ -195,11 +205,13 @@ public class AlloDraggableButton extends RelativeLayout implements View.OnTouchL
                 break;
 
             case MotionEvent.ACTION_UP:
+                long clickDuration = (Calendar.getInstance().getTimeInMillis()) - mStartClickTime;
                 yNewOfFAB = event.getRawY() + mDeltaY;
                 xNewOfFAB = event.getRawX() + mDeltaX;
-                if (mLastAction == MotionEvent.ACTION_DOWN) {
-                    view.performClick();
-//                    if (mIFabOnClickListener != null) mIFabOnClickListener.onClick();
+
+                if (clickDuration < MAX_CLICK_DURATION) {
+//                    view.performClick();
+                    if (mIFabOnClickListener != null) mIFabOnClickListener.onClick();
                     Log.d("Clicked", "onTouch: clicked");
                 }
                 if (mLastAction == MotionEvent.ACTION_MOVE) {
@@ -214,8 +226,6 @@ public class AlloDraggableButton extends RelativeLayout implements View.OnTouchL
                 return false;
         }
         return false;
-
-
     }
 
     private void checkFriendsMakeBold(Float xNewOfFAB) {
