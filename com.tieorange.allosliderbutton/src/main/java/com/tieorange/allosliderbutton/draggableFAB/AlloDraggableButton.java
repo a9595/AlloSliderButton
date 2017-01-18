@@ -145,14 +145,16 @@ public class AlloDraggableButton extends RelativeLayout implements View.OnTouchL
             }
         });
 
-        /*mFab.setOnClickListener(new OnClickListener() {
+        mFab.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (mIFabOnClickListener != null) mIFabOnClickListener.onClick();
-                Toast.makeText(mContext, "Clicked", Toast.LENGTH_SHORT).show();
+                if (mLastAction == MotionEvent.ACTION_DOWN) {
+                    if (mIFabOnClickListener != null) mIFabOnClickListener.onClick();
+                    Toast.makeText(mContext, "onClick() Clicked", Toast.LENGTH_SHORT).show();
+                }
 //                tutorialSlideToGlobal(); // TODO: 1/13/17 RM
             }
-        });*/
+        });
         mFab.setOnTouchListener(this);
     }
 
@@ -166,7 +168,7 @@ public class AlloDraggableButton extends RelativeLayout implements View.OnTouchL
                 mLastAction = MotionEvent.ACTION_DOWN;
                 if (Math.abs(event.getX()) < MAX_X_MOVE_ON_CLICK || Math.abs(event.getY()) < MAX_Y_MOVE_ON_CLICK) {
                     view.performClick();
-                    if (mIFabOnClickListener != null) mIFabOnClickListener.onClick();
+//                    if (mIFabOnClickListener != null) mIFabOnClickListener.onClick();
                     Log.d("Clicked", "onTouch: clicked MOVED FINGER");
                 } else {
                     mDeltaY = view.getY() - event.getRawY();
@@ -197,7 +199,7 @@ public class AlloDraggableButton extends RelativeLayout implements View.OnTouchL
                 xNewOfFAB = event.getRawX() + mDeltaX;
                 if (mLastAction == MotionEvent.ACTION_DOWN) {
                     view.performClick();
-                    if (mIFabOnClickListener != null) mIFabOnClickListener.onClick();
+//                    if (mIFabOnClickListener != null) mIFabOnClickListener.onClick();
                     Log.d("Clicked", "onTouch: clicked");
                 }
                 if (mLastAction == MotionEvent.ACTION_MOVE) {

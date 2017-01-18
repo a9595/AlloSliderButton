@@ -40,7 +40,6 @@ public class DraggableActivity extends AppCompatActivity {
     private void initAlloTutorial() {
         mAlloButton.initTutorial();
 
-
         runnableRecreateView = new Runnable() {
             @Override
             public void run() {
