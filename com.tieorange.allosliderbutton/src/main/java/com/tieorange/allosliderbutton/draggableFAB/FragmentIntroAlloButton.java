@@ -68,8 +68,8 @@ public class FragmentIntroAlloButton extends Fragment {
 
     private void initViews() {
         // TODO: 1/17/17 uncomment (Debug only)
-//        mAlloButton.initTutorial();
-//        initTutorialFinishedListener(mAlloButton);
+        mAlloButton.initTutorial();
+        initTutorialFinishedListener(mAlloButton);
         mAlloButton.setOnFabClickListener(new IFabOnClickListener() {
             @Override
             public void onClick() {
