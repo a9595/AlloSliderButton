@@ -634,6 +634,20 @@ public class AlloDraggableButton extends RelativeLayout implements View.OnTouchL
         mITutorialFinishedListener = listener;
     }
 
+
+    /**
+     * If true - will enable the ability too swipe FAB.
+     * If false - will be only clickable.
+     * @param isEnabled
+     */
+    public void setSwipeEnabled(boolean isEnabled) {
+        if (isEnabled) {
+            mFab.setOnTouchListener(this);
+        } else {
+            mFab.setOnTouchListener(null);
+        }
+    }
+
     public void setFabDrawable(Drawable drawable) {
         mFab.setImageDrawable(drawable);
     }
