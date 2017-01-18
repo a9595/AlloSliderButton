@@ -198,8 +198,8 @@ public class AlloDraggableButton extends RelativeLayout implements View.OnTouchL
 //                    view.performClick();
                     if (mIFabOnClickListener != null) mIFabOnClickListener.onClick();
                     Log.d("Clicked", "onTouch: clicked; DISTANCE = " + distanceSwipe(mActionDownX, mActionDownY, event.getX(), event.getY()));
-                }
-                if (mLastAction == MotionEvent.ACTION_MOVE) {
+                } else {
+//                if (mLastAction == MotionEvent.ACTION_MOVE) {
                     Log.d(TAG, "onTouch() called with:  X=" + view.getX() + "; Y=" + view.getY());
                     checkListeners(yNewOfFAB, xNewOfFAB);
                     restoreInitialX_Y(yNewOfFAB);
