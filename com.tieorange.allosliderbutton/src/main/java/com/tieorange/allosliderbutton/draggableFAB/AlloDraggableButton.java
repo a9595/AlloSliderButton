@@ -174,13 +174,6 @@ public class AlloDraggableButton extends RelativeLayout implements View.OnTouchL
                 yNewOfFAB = event.getRawY() + mDeltaY;
                 xNewOfFAB = event.getRawX() + mDeltaX;
 
-
-                float swipeDistanceY = Math.abs(event.getY() - mActionDownY);
-                float swipeDistanceX = Math.abs(event.getX() - mActionDownX);
-//                Log.d("Move", "onTouch() called with Delta =  " + swipeDistanceX + "; " + swipeDistanceY);
-                // check if clicked
-//                if (swipeDistanceX <= MAX_X_MOVE_ON_CLICK || swipeDistanceY <= MAX_Y_MOVE_ON_CLICK) {
-
                 performMove(view, yNewOfFAB);
 
                 if (yNewOfFAB >= THRESHOLD_SHOW_HUD) {
