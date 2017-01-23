@@ -2,6 +2,7 @@ package com.tieorange.allosliderbutton.draggableFAB;
 
 import android.animation.Animator;
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.RippleDrawable;
@@ -423,6 +424,7 @@ public class AlloDraggableButton extends RelativeLayout implements View.OnTouchL
 
     //region Tutorial
     public void initTutorial() {
+        enableRipple();
         mIsTutorialEnabled = true;
 
         mFab.setOnTouchListener(null);
@@ -433,6 +435,20 @@ public class AlloDraggableButton extends RelativeLayout implements View.OnTouchL
                 tutorialSlideToGlobal();
             }
         }, 500);
+    }
+
+    private void enableRipple() {
+        if (mContext != null) {
+            Drawable rippleDrawable = ContextCompat.getDrawable(mContext, R.drawable.ripple_effect);
+            mRootLayout.setBackgroundDrawable(rippleDrawable);
+
+            // set foreground:
+            int[] attrs = new int[]{R.attr.selectableItemBackground};
+            TypedArray typedArray = mContext.obtainStyledAttributes(attrs);
+            int backgroundResource = typedArray.getResourceId(0, 0);
+            mRootLayout.setBackgroundResource(backgroundResource);
+            typedArray.recycle();
+        }
     }
 
     // Button will be swiped to the Top textView and come back (for tutorial)
@@ -649,6 +665,16 @@ public class AlloDraggableButton extends RelativeLayout implements View.OnTouchL
             mFab.setOnTouchListener(null);
             mFab.setOnClickListener(this);
         }
+    }
+
+    /**
+     * true - enable ripple on the background (of rootLayout).
+     * By default - turned off
+     *
+     * @param isRippleEnabled
+     */
+    public void setRippleEnabled(boolean isRippleEnabled) {
+
     }
 
     public void setFabDrawable(Drawable drawable) {
