@@ -103,6 +103,7 @@ public class AlloDraggableButton extends RelativeLayout implements View.OnTouchL
     public void init(Context context) {
         mContext = context;
         if (mContext == null) return;
+
         mRootView = inflate(context, R.layout.allo_draggable_button_layout, this);
         mFab = (com.github.clans.fab.FloatingActionButton) findViewById(R.id.fabDraggable);
         mProgressLine = findViewById(R.id.progressLine);
@@ -325,8 +326,12 @@ public class AlloDraggableButton extends RelativeLayout implements View.OnTouchL
 
         // CANCEL:
         boolean isFabInZoneBottom = isFabInZoneBottom(yNew);
+        boolean isFabNotInZoneBottom = isFabNotInZoneBottom(yNew);
         if (isFabInZoneBottom) {
             changeTextViewTypeFaceStyle(mTvCancel, Typeface.BOLD);
+        }
+        if (isFabNotInZoneBottom) {
+            changeTextViewTypeFaceStyle(mTvCancel, Typeface.NORMAL);
         }
 
     }
@@ -341,10 +346,6 @@ public class AlloDraggableButton extends RelativeLayout implements View.OnTouchL
         });
     }
 
-    private boolean isFabNotInZoneMiddle(Float yNew) {
-        return yNew > mMediumLowestPoint || yNew < mMediumHighestPoint;
-    }
-
     private boolean isFabNotInZoneTop(Float yNew) {
         return yNew > mTopLowestPoint || yNew < mTopHighestPoint;
     }
@@ -353,11 +354,19 @@ public class AlloDraggableButton extends RelativeLayout implements View.OnTouchL
         return yNew < mTopLowestPoint && yNew > mTopHighestPoint;
     }
 
+    private boolean isFabNotInZoneMiddle(Float yNew) {
+        return yNew > mMediumLowestPoint || yNew < mMediumHighestPoint;
+    }
+
     private boolean isFabInZoneMiddle(Float yNew) {
         return yNew < mMediumLowestPoint && yNew > mMediumHighestPoint;
     }
 
     private boolean isFabInZoneBottom(Float yNew) {
+        return yNew > mMediumLowestPoint;
+    }
+
+    private boolean isFabNotInZoneBottom(Float yNew) {
         return yNew < mMediumLowestPoint;
     }
 

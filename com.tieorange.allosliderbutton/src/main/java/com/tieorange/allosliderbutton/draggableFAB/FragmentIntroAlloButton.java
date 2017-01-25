@@ -26,6 +26,7 @@ public class FragmentIntroAlloButton extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
+    private static final boolean DEBUG_MODE = true;
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -68,6 +69,7 @@ public class FragmentIntroAlloButton extends Fragment {
     }
     private void initViews() {
         // TODO: 1/17/17 uncomment (Debug only)
+        if(DEBUG_MODE) return;
         mAlloButton.initTutorial();
         initTutorialFinishedListener(mAlloButton);
 
