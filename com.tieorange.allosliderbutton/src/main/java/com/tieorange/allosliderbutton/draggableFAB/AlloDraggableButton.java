@@ -21,7 +21,6 @@ import android.view.animation.DecelerateInterpolator;
 import android.view.animation.Interpolator;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.tieorange.allosliderbutton.R;
 import com.tieorange.allosliderbutton.Tools;
@@ -102,9 +101,8 @@ public class AlloDraggableButton extends RelativeLayout implements View.OnTouchL
     }
 
     public void init(Context context) {
-        if (mContext == null) return;
-
         mContext = context;
+        if (mContext == null) return;
         mRootView = inflate(context, R.layout.allo_draggable_button_layout, this);
         mFab = (com.github.clans.fab.FloatingActionButton) findViewById(R.id.fabDraggable);
         mProgressLine = findViewById(R.id.progressLine);
@@ -297,76 +295,70 @@ public class AlloDraggableButton extends RelativeLayout implements View.OnTouchL
 
     private void makeTextViewsBold(Float yNew, Float xNewOfFAB) {
         if (isFingerOnTheRightSide(xNewOfFAB)) {
-            mTvGlobal.post(new Runnable() {
-                @Override
-                public void run() {
-                    mTvGlobal.setTypeface(null, Typeface.NORMAL);
-                }
-            });
-            mTvLocal.post(new Runnable() {
-                @Override
-                public void run() {
-                    mTvLocal.setTypeface(null, Typeface.NORMAL);
-                }
-            });
+            changeTextViewTypeFaceStyle(mTvGlobal, Typeface.NORMAL);
+            changeTextViewTypeFaceStyle(mTvLocal, Typeface.NORMAL);
             return;
         }
 
         // TOP:
-        boolean mIsFabInZoneTop = isFabInZoneTop(yNew);
-        boolean isFabNotInZone = yNew > mTopLowestPoint || yNew < mTopHighestPoint;
-        if (mIsFabInZoneTop) {
-            mTvGlobal.post(new Runnable() {
-                @Override
-                public void run() {
-                    mTvGlobal.setTypeface(null, Typeface.BOLD);
-
-                }
-            });
+        boolean isFabInZoneTop = isFabInZoneTop(yNew);
+        boolean isFabNotInZone = isFabNotInZoneTop(yNew);
+        if (isFabInZoneTop) {
+            changeTextViewTypeFaceStyle(mTvGlobal, Typeface.BOLD);
             Log.d(TAG, "In Zone Top [" + yNew + "]");
         }
         if (isFabNotInZone) {
-            mTvGlobal.post(new Runnable() {
-                @Override
-                public void run() {
-                    mTvGlobal.setTypeface(null, Typeface.NORMAL);
-                }
-            });
+            changeTextViewTypeFaceStyle(mTvGlobal, Typeface.NORMAL);
         }
 
 
         // MIDDLE:
-        boolean mIsFabInZoneMiddle = isFabInZoneMiddle(yNew);
-        boolean isFabNotInZoneMiddle = yNew > mMediumLowestPoint || yNew < mMediumHighestPoint;
-        if (mIsFabInZoneMiddle) {
-            mTvLocal.post(new Runnable() {
-                @Override
-                public void run() {
-                    mTvLocal.setTypeface(null, Typeface.BOLD);
-//                    mTvGlobal.setTypeface(mTvGlobal.getTypeface(), Typeface.NORMAL); // TODO: 1/8/17 RM
-
-                }
-            });
+        boolean isFabInZoneMiddle = isFabInZoneMiddle(yNew);
+        boolean isFabNotInZoneMiddle = isFabNotInZoneMiddle(yNew);
+        if (isFabInZoneMiddle) {
+            changeTextViewTypeFaceStyle(mTvLocal, Typeface.BOLD);
             Log.d(TAG, "In Zone Middle [" + yNew + "]");
         }
         if (isFabNotInZoneMiddle) {
-            mTvLocal.post(new Runnable() {
-                @Override
-                public void run() {
-                    mTvLocal.setTypeface(null, Typeface.NORMAL);
-                }
-            });
+            changeTextViewTypeFaceStyle(mTvLocal, Typeface.NORMAL);
         }
 
+        // CANCEL:
+        boolean isFabInZoneBottom = isFabInZoneBottom(yNew);
+        if (isFabInZoneBottom) {
+            changeTextViewTypeFaceStyle(mTvCancel, Typeface.BOLD);
+        }
 
+    }
+
+    private void changeTextViewTypeFaceStyle(final TextView textView, final int style) {
+        textView.post(new Runnable() {
+            @Override
+            public void run() {
+                textView.setTypeface(null, style);
+
+            }
+        });
+    }
+
+    private boolean isFabNotInZoneMiddle(Float yNew) {
+        return yNew > mMediumLowestPoint || yNew < mMediumHighestPoint;
+    }
+
+    private boolean isFabNotInZoneTop(Float yNew) {
+        return yNew > mTopLowestPoint || yNew < mTopHighestPoint;
+    }
+
+    private boolean isFabInZoneTop(Float yNew) {
+        return yNew < mTopLowestPoint && yNew > mTopHighestPoint;
     }
 
     private boolean isFabInZoneMiddle(Float yNew) {
         return yNew < mMediumLowestPoint && yNew > mMediumHighestPoint;
     }
 
-    private boolean isFabInZoneTop(Float yNew) {
-        return yNew < mTopLowestPoint && yNew > mTopHighestPoint;
+    private boolean isFabInZoneBottom(Float yNew) {
+        return yNew < mMediumLowestPoint;
     }
 
     private void changeVisibilityView(final View view, boolean isVisible, long animationOffset) {
@@ -428,7 +420,6 @@ public class AlloDraggableButton extends RelativeLayout implements View.OnTouchL
     public void initTutorial() {
         enableRipple();
         mIsTutorialEnabled = true;
-
         mFab.setOnTouchListener(null);
         mFab.setClickable(false);
         postDelayed(new Runnable() {
