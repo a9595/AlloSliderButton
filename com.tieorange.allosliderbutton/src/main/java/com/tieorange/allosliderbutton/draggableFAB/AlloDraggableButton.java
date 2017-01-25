@@ -102,6 +102,8 @@ public class AlloDraggableButton extends RelativeLayout implements View.OnTouchL
     }
 
     public void init(Context context) {
+        if (mContext == null) return;
+
         mContext = context;
         mRootView = inflate(context, R.layout.allo_draggable_button_layout, this);
         mFab = (com.github.clans.fab.FloatingActionButton) findViewById(R.id.fabDraggable);
@@ -438,17 +440,16 @@ public class AlloDraggableButton extends RelativeLayout implements View.OnTouchL
     }
 
     private void enableRipple() {
-        if (mContext != null) {
-            Drawable rippleDrawable = ContextCompat.getDrawable(mContext, R.drawable.ripple_effect);
-            mRootLayout.setBackgroundDrawable(rippleDrawable);
+        if (mContext == null) return;
+        Drawable rippleDrawable = ContextCompat.getDrawable(mContext, R.drawable.ripple_effect);
+        mRootLayout.setBackgroundDrawable(rippleDrawable);
 
-            // set foreground:
-            int[] attrs = new int[]{R.attr.selectableItemBackground};
-            TypedArray typedArray = mContext.obtainStyledAttributes(attrs);
-            int backgroundResource = typedArray.getResourceId(0, 0);
-            mRootLayout.setBackgroundResource(backgroundResource);
-            typedArray.recycle();
-        }
+        // set foreground:
+        int[] attrs = new int[]{R.attr.selectableItemBackground};
+        TypedArray typedArray = mContext.obtainStyledAttributes(attrs);
+        int backgroundResource = typedArray.getResourceId(0, 0);
+        mRootLayout.setBackgroundResource(backgroundResource);
+        typedArray.recycle();
     }
 
     // Button will be swiped to the Top textView and come back (for tutorial)
@@ -602,7 +603,9 @@ public class AlloDraggableButton extends RelativeLayout implements View.OnTouchL
     }
 
     protected void forceRippleAnimation(View view) {
-        final RippleDrawable rippleDrawable = (RippleDrawable) ContextCompat.getDrawable(getContext(), R.drawable.ripple_effect);
+        if (mContext == null) return;
+
+        final RippleDrawable rippleDrawable = (RippleDrawable) ContextCompat.getDrawable(mContext, R.drawable.ripple_effect);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             view.setBackground(rippleDrawable);
