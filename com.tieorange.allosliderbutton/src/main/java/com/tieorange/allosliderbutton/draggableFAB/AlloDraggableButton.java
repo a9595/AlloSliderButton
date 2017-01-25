@@ -450,6 +450,8 @@ public class AlloDraggableButton extends RelativeLayout implements View.OnTouchL
         int backgroundResource = typedArray.getResourceId(0, 0);
         mRootLayout.setBackgroundResource(backgroundResource);
         typedArray.recycle();
+
+        mRootLayout.setClickable(true);
     }
 
     // Button will be swiped to the Top textView and come back (for tutorial)

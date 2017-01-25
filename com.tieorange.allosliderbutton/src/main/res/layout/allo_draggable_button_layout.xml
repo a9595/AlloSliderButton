@@ -5,7 +5,6 @@
                 android:id="@+id/rootLayoutFabDraggable"
                 android:layout_width="300dp"
                 android:layout_height="250dp"
-                android:clickable="true"
                 android:theme="@style/Theme.AppCompat"
                 tools:background="@drawable/mapview"
                 tools:targetApi="lollipop">
