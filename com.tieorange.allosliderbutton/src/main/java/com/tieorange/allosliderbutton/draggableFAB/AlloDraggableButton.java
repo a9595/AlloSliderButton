@@ -17,6 +17,7 @@ import android.view.ViewPropertyAnimator;
 import android.view.ViewTreeObserver;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.Interpolator;
 import android.widget.RelativeLayout;
@@ -340,15 +341,26 @@ public class AlloDraggableButton extends RelativeLayout
     textView.post(new Runnable() {
       @Override public void run() {
         textView.setTypeface(null, style);
+
         if (style == Typeface.BOLD) {
-          float sizeBig = 18;
-          textView.setTextSize(sizeBig);
+          changeTextViewSize(textView, 18);
         } else {
-          float sizeSmall = 16;
-          textView.setTextSize(sizeSmall);
+          changeTextViewSize(textView, 16);
         }
       }
     });
+  }
+
+  private void changeTextViewSize(TextView textView, int sizeInSp) {
+    if (mContext == null) return;
+
+    // TODO: 26/01/2017 RM animation
+    /*Animation a = AnimationUtils.loadAnimation(mContext, R.anim.scale_text_view);
+    a.reset();
+    textView.clearAnimation();
+    textView.startAnimation(a);*/
+
+    textView.setTextSize((float) sizeInSp);
   }
 
   private boolean isFabNotInZoneTop(Float yNew) {
