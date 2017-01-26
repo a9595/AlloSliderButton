@@ -341,7 +341,7 @@ public class AlloDraggableButton extends RelativeLayout
       @Override public void run() {
         textView.setTypeface(null, style);
         if (style == Typeface.BOLD) {
-          float sizeBig = 20;
+          float sizeBig = 18;
           textView.setTextSize(sizeBig);
         } else {
           float sizeSmall = 16;
