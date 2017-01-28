@@ -17,7 +17,6 @@ import android.view.ViewPropertyAnimator;
 import android.view.ViewTreeObserver;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.Interpolator;
 import android.widget.RelativeLayout;
@@ -301,6 +300,7 @@ public class AlloDraggableButton extends RelativeLayout
     if (isFingerOnTheRightSide(xNewOfFAB)) {
       changeTextViewTypeFaceStyle(mTvGlobal, Typeface.NORMAL);
       changeTextViewTypeFaceStyle(mTvLocal, Typeface.NORMAL);
+      changeTextViewTypeFaceStyle(mTvCancel, Typeface.NORMAL);
       return;
     }
 
